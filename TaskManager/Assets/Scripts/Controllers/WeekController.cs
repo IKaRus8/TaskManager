@@ -6,11 +6,19 @@ using System.Threading.Tasks;
 
 public class WeekController
 {
+    public string WeekName { get; set; }
     public int weekNumber { get; set; }
 
     public bool isWeekDone = false;
 
     public List<DayController> days = new List<DayController>();
+
+    public void AddTask(DayController day, BaseTask task)
+    {
+        day.tasks.Add(task);
+
+        DonePercent();
+    }
 
     public float DonePercent()
     {

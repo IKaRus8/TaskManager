@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class TaskManager : MonoBehaviour
 {
+    public static TaskManager Instance;
+
     public List<WeekController> weeks;
 
     public string storagePath;
@@ -12,6 +14,11 @@ public class TaskManager : MonoBehaviour
 
     private void Awake()
     {
+        if(Instance == null)
+        {
+            Instance = this;
+        }
+
         weeks = new List<WeekController>();
 
         Storage = new StorageManager(storagePath);

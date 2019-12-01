@@ -7,10 +7,18 @@ using UnityEngine;
 public class DayController
 {
     public DateTime Date { get; set; }
+    public DayOfWeek DayOfWeek { get; set; }
 
     public bool isDayDone = false;
 
     public List<BaseTask> tasks = new List<BaseTask>();
+
+    public void AddTask(BaseTask task)
+    {
+        tasks.Add(task);
+
+        DonePercent();
+    }
 
     public float DonePercent()
     {

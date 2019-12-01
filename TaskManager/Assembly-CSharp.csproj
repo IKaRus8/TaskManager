@@ -63,6 +63,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\DayItem.cs" />
     <Compile Include="Assets\Scripts\Controllers\Archive.cs" />
     <Compile Include="Assets\Scripts\Controllers\BaseTask.cs" />
     <Compile Include="Assets\Scripts\Controllers\DayController.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Assets\Scripts\ITask.cs" />
     <Compile Include="Assets\Scripts\Managers\StorageManager.cs" />
     <Compile Include="Assets\Scripts\Managers\TaskManager.cs" />
+    <Compile Include="Assets\TaskCreatePanel.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>H:/Work/GitProjects/TaskManager/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
