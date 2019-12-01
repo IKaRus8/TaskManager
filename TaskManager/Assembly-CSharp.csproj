@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\DayItem.cs" />
+    <Compile Include="Assets\DialogController.cs" />
     <Compile Include="Assets\Scripts\Controllers\Archive.cs" />
     <Compile Include="Assets\Scripts\Controllers\BaseTask.cs" />
     <Compile Include="Assets\Scripts\Controllers\DayController.cs" />

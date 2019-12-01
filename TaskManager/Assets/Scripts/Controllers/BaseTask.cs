@@ -9,6 +9,7 @@ public class BaseTask : MonoBehaviour
     public Image background;
 
     public bool IsDone { get; set; }
+    public string DescriptionText { get; set; }
 
     protected Color defColor;
     protected TaskType type;
@@ -17,6 +18,8 @@ public class BaseTask : MonoBehaviour
     {
         IsDone = false;
         defColor = background.color;
+
+        description.text = DescriptionText;
     }
 
     virtual public void Start()
@@ -31,7 +34,7 @@ public class BaseTask : MonoBehaviour
 
     virtual public void Construct(string text)
     {
-        description.text = text;
+        DescriptionText = text;
     }
 
     virtual public void Change(string text)

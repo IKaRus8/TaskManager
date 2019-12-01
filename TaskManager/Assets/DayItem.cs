@@ -7,12 +7,8 @@ using UnityEngine.UI;
 public class DayItem : MonoBehaviour
 {
     public DayOfWeek day;
+    public Button button;
+    public Text text;
 
     public WeekController Week { get; set; }
-    public Button Button { get; set; } 
-
-    private void Awake()
-    {
-        Button = GetComponent<Button>();
-    }
 }

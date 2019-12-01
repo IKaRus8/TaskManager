@@ -350,6 +350,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7d046016b9a698439258430296560c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  description: {fileID: 7137262447354528231}
+  background: {fileID: 5267185717253823850}
+  doneToggle: {fileID: 8077817215027288370}
+  doneColor: {r: 0.8018868, g: 0.18534178, b: 0.18534178, a: 0}
 --- !u!1 &4378698009801422522
 GameObject:
   m_ObjectHideFlags: 0

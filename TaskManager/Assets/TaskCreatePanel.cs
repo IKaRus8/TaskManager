@@ -44,17 +44,18 @@ public class TaskCreatePanel : MonoBehaviour
 
     public void Construct()
     {
-        TaskManager.weeks.ForEach(w => 
+        TaskManager.Weeks.ForEach(w => 
         {
             DayItem controller = Instantiate(dayWeekItemGo, weekGo.transform);
 
             controller.Week = w;
-            controller.Button.onClick.AddListener(() => OnWeekButtonClick(controller));
+            controller.text.text = w.WeekName;
+            controller.button.onClick.AddListener(() => OnWeekButtonClick(controller));
         });
 
-        Days.ForEach(d => d.Button.onClick.AddListener(() => OnDayButtonClick(d)));
+        Days.ForEach(d => d.button.onClick.AddListener(() => OnDayButtonClick(d)));
 
-        Week = TaskManager.weeks?.FirstOrDefault();
+        Week = TaskManager.Weeks?.FirstOrDefault();
         Day = Week?.days?.FirstOrDefault();
     }
 
@@ -89,7 +90,7 @@ public class TaskCreatePanel : MonoBehaviour
     {
         Day = Week.days.FirstOrDefault(d => d.DayOfWeek == item.day);
 
-        dayChangeButton.GetComponentInChildren<Text>().text = Enum.GetName(typeof(DayOfWeek), Day);
+        dayChangeButton.GetComponentInChildren<Text>().text = Enum.GetName(typeof(DayOfWeek), Day.DayOfWeek);
 
         dayGo.gameObject.SetActive(false);
     }

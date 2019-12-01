@@ -13,6 +13,11 @@ public class DayController
 
     public List<BaseTask> tasks = new List<BaseTask>();
 
+    public DayController(DayOfWeek day)
+    {
+        DayOfWeek = day;
+    }
+
     public void AddTask(BaseTask task)
     {
         tasks.Add(task);

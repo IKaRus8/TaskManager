@@ -13,6 +13,19 @@ public class WeekController
 
     public List<DayController> days = new List<DayController>();
 
+    public WeekController(int number, string weekName)
+    {
+        weekNumber = number;
+        WeekName = weekName + $"({weekNumber})";
+
+        foreach(DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
+        {
+            DayController newDay = new DayController(day);
+
+            days.Add(newDay);
+        }
+    }
+
     public void AddTask(DayController day, BaseTask task)
     {
         day.tasks.Add(task);

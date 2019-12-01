@@ -209,3 +209,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   day: 1
+  button: {fileID: 9146073745635874423}
+  text: {fileID: 7591344778196636537}

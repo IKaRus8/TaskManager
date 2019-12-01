@@ -1,14 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class TaskManager : MonoBehaviour
 {
     public static TaskManager Instance;
 
-    public List<WeekController> weeks;
+    public List<WeekController> Weeks { get; set; }
 
     public string storagePath;
+
+    public DialogController weekCreateDialog;
 
     private StorageManager Storage { get; set; }
 
@@ -19,7 +22,7 @@ public class TaskManager : MonoBehaviour
             Instance = this;
         }
 
-        weeks = new List<WeekController>();
+        Weeks = new List<WeekController>();
 
         Storage = new StorageManager(storagePath);
     }
@@ -34,9 +37,13 @@ public class TaskManager : MonoBehaviour
 
     }
 
-    public void AddWeek()
+    public void AddWeek(string weekName)
     {
-        
+        WeekController newWeek = new WeekController(Weeks.Count + 1, weekName);
+
+        Weeks.Add(newWeek);
+
+        Save();
     }
 
     public void Save()
@@ -47,6 +54,19 @@ public class TaskManager : MonoBehaviour
     public void Load()
     {
         Storage.Load();
+    }
+
+    public void WeekDialogConstruct()
+    {
+        weekCreateDialog.input.text = $"Неделя {Weeks.Count + 1}";
+        weekCreateDialog.Action = OnWeekCreate;
+
+        weekCreateDialog.gameObject.SetActive(true);
+    }
+
+    private void OnWeekCreate(string text)
+    {
+        AddWeek(text);
     }
 }
 

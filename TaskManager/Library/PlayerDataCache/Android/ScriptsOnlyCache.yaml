@@ -1,7 +1,10 @@
 ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
-    - TaskItem
+    - DayItem
+    - DialogController
+    - TaskCreatePanel
+    - TaskManager
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
     - UnityEditor.TestTools.TestRunner.TestListCacheData
@@ -14,6 +17,7 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.GraphicRaycaster
     - UnityEngine.UI.HorizontalLayoutGroup
     - UnityEngine.UI.Image
+    - UnityEngine.UI.InputField
     - UnityEngine.UI.LayoutElement
     - UnityEngine.UI.Mask
     - UnityEngine.UI.ScrollRect
@@ -42,35 +46,43 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 9674}
     - Class: 114
-      Script: {instanceID: 9822}
+      Script: {instanceID: 9826}
     - Class: 114
-      Script: {instanceID: 9824}
+      Script: {instanceID: 9828}
     - Class: 114
-      Script: {instanceID: 9862}
+      Script: {instanceID: 9866}
     - Class: 114
-      Script: {instanceID: 9960}
+      Script: {instanceID: 9964}
     - Class: 114
-      Script: {instanceID: 9976}
+      Script: {instanceID: 9980}
     - Class: 114
-      Script: {instanceID: 10144}
+      Script: {instanceID: 10148}
     - Class: 114
-      Script: {instanceID: 10228}
+      Script: {instanceID: 10232}
     - Class: 114
-      Script: {instanceID: 10392}
+      Script: {instanceID: 10338}
     - Class: 114
-      Script: {instanceID: 10564}
+      Script: {instanceID: 10398}
     - Class: 114
-      Script: {instanceID: 10648}
+      Script: {instanceID: 10572}
     - Class: 114
-      Script: {instanceID: 10768}
+      Script: {instanceID: 10656}
     - Class: 114
-      Script: {instanceID: 11004}
+      Script: {instanceID: 10752}
     - Class: 114
-      Script: {instanceID: 11344}
+      Script: {instanceID: 10776}
     - Class: 114
-      Script: {instanceID: 11358}
+      Script: {instanceID: 10786}
     - Class: 114
-      Script: {instanceID: 14840}
+      Script: {instanceID: 10858}
+    - Class: 114
+      Script: {instanceID: 11018}
+    - Class: 114
+      Script: {instanceID: 11362}
+    - Class: 114
+      Script: {instanceID: 11376}
+    - Class: 114
+      Script: {instanceID: 13920}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -110,6 +122,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TMP_Dropdown
+  - hash:
+      serializedVersion: 2
+      Hash: cdaa8cf88d4342d616be351d3f30329d
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: TaskItem
   - hash:
       serializedVersion: 2
       Hash: e7a73f5f78ba6445195ec23b74a1ce2d
@@ -274,6 +292,12 @@ ScriptsOnlyBuild:
     className: Selectable
   - hash:
       serializedVersion: 2
+      Hash: fc4ee5611f760746f0f0f02ae4ae055d
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: TaskManager
+  - hash:
+      serializedVersion: 2
       Hash: b3ab2106268377ffe25dd18ac23dca28
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
@@ -296,6 +320,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
     className: TMP_SpriteAnimator
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Swipe
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -352,6 +382,12 @@ ScriptsOnlyBuild:
     className: TMP_FontAsset
   - hash:
       serializedVersion: 2
+      Hash: 4db4421a4435f99d148f0466b1de623f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: TaskCreatePanel
+  - hash:
+      serializedVersion: 2
       Hash: e1300922cc039f41ab46a47f4cb05898
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
@@ -374,6 +410,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: TimelineAsset
+  - hash:
+      serializedVersion: 2
+      Hash: 3cc51aa46a1896dd1df96f7e1a4ec0ec
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: DayItem
   - hash:
       serializedVersion: 2
       Hash: 3b760e6526e13f7504f59e210145899a
@@ -490,6 +532,12 @@ ScriptsOnlyBuild:
     className: Slider
   - hash:
       serializedVersion: 2
+      Hash: 1d585dc4a91c89503bb2f7b0ac8875b4
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: BaseTask
+  - hash:
+      serializedVersion: 2
       Hash: 0fd6822f6177297bd0eb4d83cc7a9030
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
@@ -502,11 +550,11 @@ ScriptsOnlyBuild:
     className: PlayableTrack
   - hash:
       serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+      Hash: e1f77a0ec7d2836c83316607031f8f53
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
-    className: TaskItem
+    className: DialogController
   platform: 13
   scenePathNames:
   - Assets/Scenes/SampleScene.unity
-  playerPath: H:/Work/Projects/Builds/TaskManager_18.11.19/TaskManager.apk
+  playerPath: H:/Work/Projects/Builds/TaskManager_1.12.19/TaskManager.apk
