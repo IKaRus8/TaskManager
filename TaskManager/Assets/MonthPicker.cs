@@ -1,18 +1,20 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
 
 public class MonthPicker : DatePicker
 {
-    private string MonthName { get; set; }
-    private DateTimeFormatInfo DateInfo { get; set; }
-
+    public string MonthName { get; set; }
+    
     public override void Awake()
     {
         base.Awake();
 
-        DateInfo = CultureInfo.GetCultureInfo("ru-Ru").DateTimeFormat;
+        CurrentValue = DateTime.Now.Month;
+
+        gameObject.SetActive(false);
     }
 
     public override void AddToggle(int value)

@@ -66,6 +66,7 @@
     <Compile Include="Assets\CalendarController.cs" />
     <Compile Include="Assets\DatePicker.cs" />
     <Compile Include="Assets\DateToggle.cs" />
+    <Compile Include="Assets\DayPicker.cs" />
     <Compile Include="Assets\MonthPicker.cs" />
     <Compile Include="Assets\Scripts\Controllers\Archive.cs" />
     <Compile Include="Assets\Scripts\Controllers\BaseTask.cs" />

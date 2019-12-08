@@ -1,18 +1,16 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class YearPicker : MonoBehaviour
+public class YearPicker : DatePicker
 {
-    // Start is called before the first frame update
-    void Start()
+    public override void Awake()
     {
-        
-    }
+        base.Awake();
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        CurrentValue = DateTime.Now.Year;
+
+        gameObject.SetActive(false);
     }
 }

@@ -2,15 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using UnityEngine;
 
 public class CalendarController : MonoBehaviour
 {
     public DatePicker yearPicker;
     public DatePicker monthPicker;
-    public DatePicker dayPicker;
-
-    public GameObject togglePrefab;
+    public DayPicker dayPicker;
 
     private DateTime SelectedDate { get; set; }
     private DateTime CurrentDate { get; set; }
@@ -30,6 +29,13 @@ public class CalendarController : MonoBehaviour
         dayPicker.Callback = OnDayToggleClick;
     }
 
+    private void Start()
+    {
+        FillYear();
+        FillMonth();
+        FillDays();
+    }
+
     private void FillYear()
     {
         for( int i = CurrentDate.Year; i <= CurrentDate.Year + AvailableYears; i++)
@@ -40,7 +46,7 @@ public class CalendarController : MonoBehaviour
 
     private void FillMonth()
     {
-        for(int i = 1; i <= DateInfo.MonthNames.Length; i++)
+        for(int i = 1; i < DateInfo.MonthNames.Length; i++)
         {
             monthPicker.AddToggle(i);
         }
@@ -50,10 +56,14 @@ public class CalendarController : MonoBehaviour
     {
         int dayCount = DateInfo.Calendar.GetDaysInMonth(SelectedDate.Year, SelectedDate.Month);
 
-        for (var i = 1; i <= dayCount; i++)
+        for (var i = 0; i <= dayCount; i++)
         {
-            dayPicker.AddToggle(i);
+            DateTime dateTime = new DateTime(SelectedDate.Year, SelectedDate.Month, Mathf.Max(1, i));
+
+            dayPicker.AddToggle(dateTime);
         }
+
+        dayPicker.SetOtherDayDisable();
     }
 
     private void OnYearToggleClick(int year)
@@ -69,5 +79,10 @@ public class CalendarController : MonoBehaviour
     private void OnDayToggleClick(int day)
     {
         SelectedDate = new DateTime(SelectedDate.Year, SelectedDate.Month, day);
+    }
+
+    private void SetCurrentDay()
+    {
+
     }
 }
