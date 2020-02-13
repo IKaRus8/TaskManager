@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using MongoDB.Bson;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,8 +12,10 @@ public class BaseTask : MonoBehaviour
     public bool IsDone { get; set; }
     public string DescriptionText { get; set; }
 
+    public ObjectId _id;
+    public TaskType type;
+
     protected Color defColor;
-    protected TaskType type;
 
     virtual public void Awake()
     {

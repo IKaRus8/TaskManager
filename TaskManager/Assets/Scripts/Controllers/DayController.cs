@@ -18,7 +18,17 @@ public class DayController
         DayOfWeek = day;
     }
 
-    public void AddTask(BaseTask task)
+    public void AddTask(TaskItem task, string weekNane)
+    {
+        task._weekname = weekNane;
+        task._dayOfWeek = DayOfWeek;
+
+        tasks.Add(task);
+
+        DonePercent();
+    }
+
+    public void AddDisposableTask(BaseTask task)
     {
         tasks.Add(task);
 

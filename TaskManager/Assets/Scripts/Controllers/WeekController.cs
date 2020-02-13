@@ -28,7 +28,7 @@ public class WeekController
 
     public void AddTask(DayController day, BaseTask task)
     {
-        day.tasks.Add(task);
+        day.AddTask(task as TaskItem, WeekName);
 
         DonePercent();
     }

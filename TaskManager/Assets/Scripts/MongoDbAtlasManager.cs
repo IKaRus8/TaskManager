@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using System.Linq;
@@ -13,20 +14,27 @@ namespace DataBase
 
         private User _user;
 
-        private void Conect()
+        public void Conect()
         {
             _client = new MongoClient("mongodb+srv://Rkarimov:12345@clustertask-nfnnn.gcp.mongodb.net/test?retryWrites=true&w=majority");
             _database = _client.GetDatabase("test");
             UserCollection = _database.GetCollection<BsonDocument>("Users");
         }
 
-        public void TakeUser(string login, string password)
+        public string TakeUser(string login, string password)
         {
             var filter = Builders<BsonDocument>.Filter.Eq("login", login);
 
             var response = UserCollection.Find(filter).FirstOrDefault();
 
-            var a = JsonConvert.DeserializeObject(response.ToString());
+            if(response == null)
+            {
+                return "User not finded";
+            }
+
+            _user = BsonSerializer.Deserialize<User>(response);
+
+            return _user.login;
         }
 
         public string NewUser(string login, string password)
@@ -40,19 +48,15 @@ namespace DataBase
                 return "User already created";
             }
 
-            _user = new User
-            {
-                login = login,
-                password = password
-            };
-
             var document = new BsonDocument { { "login", login }, {"password", password}};
 
             UserCollection.InsertOne(document);
 
             checkUser = UserCollection.Find(filter).FirstOrDefault();
 
-            return checkUser.ToString();
+            _user = BsonSerializer.Deserialize<User>(checkUser);
+
+            return _user.login;
         }
     }
 }

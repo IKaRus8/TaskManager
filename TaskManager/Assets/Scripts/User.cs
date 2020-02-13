@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MongoDB.Bson;
 
 namespace DataBase
 {
     public class User
     {
-        public string id;
+        //[BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
+        //[BsonRepresentation(BsonType.ObjectId)]
+        public ObjectId _id;
+
         public string login;
         public string password;
 
