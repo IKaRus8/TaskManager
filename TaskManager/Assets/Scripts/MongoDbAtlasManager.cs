@@ -6,11 +6,12 @@ using System.Linq;
 
 namespace DataBase
 {
-    class MongoDbAtlasManager
+    public class MongoDbAtlasManager
     {
         public MongoClient _client;
         public IMongoDatabase _database;
-        public IMongoCollection<BsonDocument> UserCollection;
+        public IMongoCollection<BsonDocument> _userCollection;
+        public IMongoCollection<BsonDocument> _taskCollection;
 
         private User _user;
 
@@ -18,14 +19,14 @@ namespace DataBase
         {
             _client = new MongoClient("mongodb+srv://Rkarimov:12345@clustertask-nfnnn.gcp.mongodb.net/test?retryWrites=true&w=majority");
             _database = _client.GetDatabase("test");
-            UserCollection = _database.GetCollection<BsonDocument>("Users");
+            _userCollection = _database.GetCollection<BsonDocument>("Users");
         }
 
         public string TakeUser(string login, string password)
         {
             var filter = Builders<BsonDocument>.Filter.Eq("login", login);
 
-            var response = UserCollection.Find(filter).FirstOrDefault();
+            var response = _userCollection.Find(filter).FirstOrDefault();
 
             if(response == null)
             {
@@ -41,7 +42,7 @@ namespace DataBase
         {
             var filter = Builders<BsonDocument>.Filter.Eq("login", login);
 
-            var checkUser = UserCollection.Find(filter).FirstOrDefault();
+            var checkUser = _userCollection.Find(filter).FirstOrDefault();
 
             if(checkUser != null)
             {
@@ -50,9 +51,9 @@ namespace DataBase
 
             var document = new BsonDocument { { "login", login }, {"password", password}};
 
-            UserCollection.InsertOne(document);
+            _userCollection.InsertOne(document);
 
-            checkUser = UserCollection.Find(filter).FirstOrDefault();
+            checkUser = _userCollection.Find(filter).FirstOrDefault();
 
             _user = BsonSerializer.Deserialize<User>(checkUser);
 

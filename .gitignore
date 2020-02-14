@@ -2,6 +2,10 @@
 # Данный GITIGNORE-файл был автоматически создан Microsoft(R) Visual Studio.
 ################################################################################
 
-TaskManager/Temp
-TaskManager/Library
-TaskManager/.vs
+/TaskManager/Temp
+/TaskManager/Library
+/TaskManager/.vs
+
+*.csproj
+*.sln
+*.vs

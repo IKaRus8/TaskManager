@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TaskCreatePanel : MonoBehaviour
+public class TaskCreatePanel : BasePanel
 {
     public Toggle RecurringType;
     public Button weekChangeButton;
@@ -25,15 +25,19 @@ public class TaskCreatePanel : MonoBehaviour
     private DayController Day { get; set; }
     private List<DayItem> Days { get; set; }
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         createButton.onClick.AddListener(Create);
 
         Days = dayGo.GetComponentsInChildren<DayItem>().ToList();
     }
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
+
         TaskManager = TaskManager.Instance;
 
         weekGo.SetActive(false);

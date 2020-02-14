@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class DialogController : MonoBehaviour
+public class DialogPanel : BasePanel
 {
     public InputField input;
     public Button okButton;
@@ -12,8 +12,10 @@ public class DialogController : MonoBehaviour
 
     public UnityAction<string> Action { get; set; }
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         input.onEndEdit.AddListener(OnInputFieldChange);
 
         okButton.onClick.AddListener(() => Action.Invoke(input.text));

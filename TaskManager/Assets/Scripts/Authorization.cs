@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace DataBase
 {
-    class Authorization : MonoBehaviour
+    public class Authorization : BasePanel
     {
         public InputField login;
         public InputField password;
@@ -22,14 +17,14 @@ namespace DataBase
         private Regex regex;
         private string regexPattern = "^[a-zA-Z0-9]{3,8}$";
 
-        private void Awake()
+        protected override void Awake()
         {
             authorizeButton.onClick.AddListener(OnButtonClick);
 
             regex = new Regex(regexPattern);
         }
 
-        private void Start()
+        protected override void Start()
         {
             dbManager = new MongoDbAtlasManager();
             dbManager.Conect();

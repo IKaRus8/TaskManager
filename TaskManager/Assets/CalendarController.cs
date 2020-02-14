@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Linq;
 using UnityEngine;
 
-public class CalendarController : MonoBehaviour
+public class CalendarController : BasePanel
 {
     public DatePicker yearPicker;
     public DatePicker monthPicker;
@@ -18,7 +18,7 @@ public class CalendarController : MonoBehaviour
 
     private int AvailableYears = 3;
 
-    private void Awake()
+    protected override void Awake()
     {
         SelectedDate = new DateTime();
         CurrentDate = DateTime.Now;
@@ -29,7 +29,7 @@ public class CalendarController : MonoBehaviour
         dayPicker.Callback = OnDayToggleClick;
     }
 
-    private void Start()
+    protected override void Start()
     {
         FillYear();
         FillMonth();

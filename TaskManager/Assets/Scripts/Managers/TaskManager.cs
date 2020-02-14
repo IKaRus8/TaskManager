@@ -9,9 +9,10 @@ public class TaskManager : MonoBehaviour
 
     public List<WeekController> Weeks { get; set; }
 
-    public string storagePath;
+    //public string storagePath;
 
-    public DialogController weekCreateDialog;
+    private DialogPanel weekCreateDialog;
+    private TaskCreatePanel taskCreatePanel;
 
     private StorageManager Storage { get; set; }
 
@@ -24,12 +25,15 @@ public class TaskManager : MonoBehaviour
 
         Weeks = new List<WeekController>();
 
-        Storage = new StorageManager(storagePath);
+        //Storage = new StorageManager(storagePath);
     }
 
     private void Start()
     {
         Load();
+
+        weekCreateDialog = PanelManager.Instance.GetPanel<DialogPanel>();
+        taskCreatePanel = PanelManager.Instance.GetPanel<TaskCreatePanel>();
     }
 
     public void CreateTask()
@@ -58,15 +62,25 @@ public class TaskManager : MonoBehaviour
 
     public void WeekDialogConstruct()
     {
-        weekCreateDialog.input.text = $"Неделя {Weeks.Count + 1}";
-        weekCreateDialog.Action = OnWeekCreate;
+        if (weekCreateDialog != null && weekCreateDialog != default)
+        {
+            weekCreateDialog.input.text = $"Неделя {Weeks.Count + 1}";
+            weekCreateDialog.Action = OnWeekCreate;
 
-        weekCreateDialog.gameObject.SetActive(true);
+            PanelManager.Instance.SwitchOffPanels();
+            PanelManager.Instance.EnableBackground(true);
+            weekCreateDialog.Show();
+        }
     }
 
     private void OnWeekCreate(string text)
     {
         AddWeek(text);
+    }
+
+    public void ShowTaskCreatePanel()
+    {
+        taskCreatePanel.Show();
     }
 }
 
