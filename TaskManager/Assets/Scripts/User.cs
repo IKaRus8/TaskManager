@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using System.Collections.Generic;
 
 namespace DataBase
 {
@@ -10,6 +11,6 @@ namespace DataBase
 
         public string login;
         public string password;
-
+        public List<WeekController> weeks;
     }
 }

@@ -8,10 +8,7 @@ public class TaskItem : BaseTask
 {
     public Toggle doneToggle;
     public Color doneColor;
-
-    public string _weekname;
-    public DayOfWeek _dayOfWeek;
-
+    
     override public void Awake()
     {
         base.Awake();
@@ -28,15 +25,15 @@ public class TaskItem : BaseTask
     {
         Construct(text);
 
-        _weekname = weekName;
-        _dayOfWeek = dayOfWeek;
+        taskInfo._weekname = weekName;
+        taskInfo._dayOfWeek = dayOfWeek;
     }
 
     override protected void OnToggleValueChanged(bool value)
     {
         base.OnToggleValueChanged(value);
 
-        if (IsDone)
+        if (taskInfo._isDone)
         {
             background.color = doneColor;
         }

@@ -10,20 +10,22 @@ public class TaskCreatePanel : BasePanel
     public Toggle RecurringType;
     public Button weekChangeButton;
     public Button dayChangeButton;
+    public Button createButton;
 
     [Space]
     public DayItem dayWeekItemGo;
-    public Button createButton;
 
     [Space]
     public InputField description;
     public GameObject dayGo;
     public GameObject weekGo;
 
-    private TaskManager TaskManager { get; set; }
+    private TaskManager _taskManager => TaskManager.Instance;
     private WeekController Week { get; set; }
-    private DayController Day { get; set; }
+    private DayOfWeek Day { get; set; }
     private List<DayItem> Days { get; set; }
+
+    private StorageManager Storage = new StorageManager();
 
     protected override void Awake()
     {
@@ -38,8 +40,6 @@ public class TaskCreatePanel : BasePanel
     {
         base.Start();
 
-        TaskManager = TaskManager.Instance;
-
         weekGo.SetActive(false);
         dayGo.SetActive(false);
 
@@ -48,7 +48,7 @@ public class TaskCreatePanel : BasePanel
 
     public void Construct()
     {
-        TaskManager.Weeks.ForEach(w => 
+        _taskManager.Weeks.ForEach(w => 
         {
             DayItem controller = Instantiate(dayWeekItemGo, weekGo.transform);
 
@@ -59,26 +59,22 @@ public class TaskCreatePanel : BasePanel
 
         Days.ForEach(d => d.button.onClick.AddListener(() => OnDayButtonClick(d)));
 
-        Week = TaskManager.Weeks?.FirstOrDefault();
-        Day = Week?.days?.FirstOrDefault();
+        Week = _taskManager.Weeks?.FirstOrDefault();
     }
 
     private void Create()
     {
-        BaseTask newtask;
-
-        if (RecurringType)
+        TaskInfo newtask = new TaskInfo
         {
-            newtask = new TaskItem();
-        }
-        else
-        {
-            newtask = new BaseTask();
-        }
+            isRecurring = RecurringType.isOn,
+            _descriptionText = description.text,
+            _weekname = Week.WeekName,
+            _dayOfWeek = Day
+        };
 
-        newtask.Construct(description.text);
+        Week.AddTask(newtask);
 
-        Week.AddTask(Day, newtask);
+        Storage.Save(newtask);
     }
 
     private void OnWeekButtonClick(DayItem item)
@@ -92,9 +88,9 @@ public class TaskCreatePanel : BasePanel
 
     private void OnDayButtonClick(DayItem item)
     {
-        Day = Week.days.FirstOrDefault(d => d.DayOfWeek == item.day);
+        Day = item.day;
 
-        dayChangeButton.GetComponentInChildren<Text>().text = Enum.GetName(typeof(DayOfWeek), Day.DayOfWeek);
+        dayChangeButton.GetComponentInChildren<Text>().text = Enum.GetName(typeof(DayOfWeek), Day);
 
         dayGo.gameObject.SetActive(false);
     }

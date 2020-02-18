@@ -12,10 +12,10 @@ namespace DataBase
         public Button authorizeButton;
         public Toggle registrationToggle;
 
-        public MongoDbAtlasManager dbManager;
+        private PanelManager _panelManager => PanelManager.Instance;
 
         private Regex regex;
-        private string regexPattern = "^[a-zA-Z0-9]{3,8}$";
+        private string regexPattern = "^[a-zA-Z0-9]{3,10}$";
 
         protected override void Awake()
         {
@@ -26,8 +26,7 @@ namespace DataBase
 
         protected override void Start()
         {
-            dbManager = new MongoDbAtlasManager();
-            dbManager.Conect();
+            MongoDbAtlasManager.Conect();
         }
 
         private void OnButtonClick()
@@ -58,12 +57,32 @@ namespace DataBase
 
         private void SignIn()
         {
-            message.text = dbManager.TakeUser(login.text, password.text);
+            bool isLogin = MongoDbAtlasManager.TakeUser(login.text, password.text);
+
+            if (isLogin)
+            {
+                _panelManager.SwitchOffPanels();
+                _panelManager.EnableBackground(false);
+            }
+            else
+            {
+                message.text = "User not finded";
+            }
         }
 
         private void SignUp()
         {
-            message.text = dbManager.NewUser(login.text, password.text);
+            bool isLogin = MongoDbAtlasManager.NewUser(login.text, password.text);
+
+            if (isLogin)
+            {
+                _panelManager.SwitchOffPanels();
+                _panelManager.EnableBackground(false);
+            }
+            else
+            {
+                message.text = "User already created"; 
+            }
         }
     }
 }

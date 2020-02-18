@@ -9,12 +9,12 @@ public class TaskManager : MonoBehaviour
 
     public List<WeekController> Weeks { get; set; }
 
-    //public string storagePath;
-
     private DialogPanel weekCreateDialog;
     private TaskCreatePanel taskCreatePanel;
 
-    private StorageManager Storage { get; set; }
+    private StorageManager Storage = new StorageManager();
+
+    private PanelManager _panelManager => PanelManager.Instance;
 
     private void Awake()
     {
@@ -24,16 +24,12 @@ public class TaskManager : MonoBehaviour
         }
 
         Weeks = new List<WeekController>();
-
-        //Storage = new StorageManager(storagePath);
     }
 
     private void Start()
     {
-        Load();
-
-        weekCreateDialog = PanelManager.Instance.GetPanel<DialogPanel>();
-        taskCreatePanel = PanelManager.Instance.GetPanel<TaskCreatePanel>();
+        weekCreateDialog = _panelManager.GetPanel<DialogPanel>();
+        taskCreatePanel = _panelManager.GetPanel<TaskCreatePanel>();
     }
 
     public void CreateTask()
@@ -57,7 +53,17 @@ public class TaskManager : MonoBehaviour
 
     public void Load()
     {
-        Storage.Load();
+        var tasks = Storage.Load();
+
+        foreach(var task in tasks)
+        {
+
+        }
+    }
+
+    public void Update()
+    {
+        Storage.Update();
     }
 
     public void WeekDialogConstruct()
@@ -67,8 +73,8 @@ public class TaskManager : MonoBehaviour
             weekCreateDialog.input.text = $"Неделя {Weeks.Count + 1}";
             weekCreateDialog.Action = OnWeekCreate;
 
-            PanelManager.Instance.SwitchOffPanels();
-            PanelManager.Instance.EnableBackground(true);
+            _panelManager.SwitchOffPanels();
+            _panelManager.EnableBackground(true);
             weekCreateDialog.Show();
         }
     }
@@ -80,13 +86,8 @@ public class TaskManager : MonoBehaviour
 
     public void ShowTaskCreatePanel()
     {
+        _panelManager.SwitchOffPanels();
+        _panelManager.EnableBackground(true);
         taskCreatePanel.Show();
     }
-}
-
-public enum TaskType
-{
-    Recurring,
-    Disposable,
-    Deleted
 }

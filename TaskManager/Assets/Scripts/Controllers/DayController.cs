@@ -9,26 +9,16 @@ public class DayController
     public DateTime Date { get; set; }
     public DayOfWeek DayOfWeek { get; set; }
 
-    public bool isDayDone = false;
+    public bool isDayDone;
 
-    public List<BaseTask> tasks = new List<BaseTask>();
+    private List<TaskInfo> tasks = new List<TaskInfo>();
 
     public DayController(DayOfWeek day)
     {
         DayOfWeek = day;
     }
 
-    public void AddTask(TaskItem task, string weekNane)
-    {
-        task._weekname = weekNane;
-        task._dayOfWeek = DayOfWeek;
-
-        tasks.Add(task);
-
-        DonePercent();
-    }
-
-    public void AddDisposableTask(BaseTask task)
+    public void AddTask(TaskInfo task)
     {
         tasks.Add(task);
 
@@ -37,7 +27,7 @@ public class DayController
 
     public float DonePercent()
     {
-        int doneTaskCount = tasks.Where(t => t.IsDone).Count();
+        int doneTaskCount = tasks.Where(t => t._isDone).Count();
 
         int result = doneTaskCount / tasks.Count();
 

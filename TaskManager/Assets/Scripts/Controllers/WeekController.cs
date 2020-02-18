@@ -9,9 +9,9 @@ public class WeekController
     public string WeekName { get; set; }
     public int weekNumber { get; set; }
 
-    public bool isWeekDone = false;
+    public bool isWeekDone;
 
-    public List<DayController> days = new List<DayController>();
+    private List<DayController> days = new List<DayController>();
 
     public WeekController(int number, string weekName)
     {
@@ -26,9 +26,11 @@ public class WeekController
         }
     }
 
-    public void AddTask(DayController day, BaseTask task)
+    public void AddTask(TaskInfo task)
     {
-        day.AddTask(task as TaskItem, WeekName);
+        var day = days.FirstOrDefault(d => d.DayOfWeek == task._dayOfWeek);
+
+        day.AddTask(task);
 
         DonePercent();
     }

@@ -1,63 +1,75 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
-using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DataBase
 {
-    public class MongoDbAtlasManager
+    public static class MongoDbAtlasManager
     {
-        public MongoClient _client;
-        public IMongoDatabase _database;
-        public IMongoCollection<BsonDocument> _userCollection;
-        public IMongoCollection<BsonDocument> _taskCollection;
+        private static MongoClient _client;
+        private static IMongoDatabase _database;
+        private static IMongoCollection<User> _userCollection;
+        private static IMongoCollection<TaskInfo> _taskCollection;
 
-        private User _user;
-
-        public void Conect()
+        private static User CurrentUser;
+        
+        public static void Conect()
         {
             _client = new MongoClient("mongodb+srv://Rkarimov:12345@clustertask-nfnnn.gcp.mongodb.net/test?retryWrites=true&w=majority");
             _database = _client.GetDatabase("test");
-            _userCollection = _database.GetCollection<BsonDocument>("Users");
+            _userCollection = _database.GetCollection<User>("Users");
+            _taskCollection = _database.GetCollection<TaskInfo>("Tasks");
         }
 
-        public string TakeUser(string login, string password)
+        public static bool TakeUser(string login, string password)
         {
-            var filter = Builders<BsonDocument>.Filter.Eq("login", login);
-
-            var response = _userCollection.Find(filter).FirstOrDefault();
+            User response = _userCollection.Find(u => u.login == login && u.password == password).FirstOrDefault();
 
             if(response == null)
             {
-                return "User not finded";
+                return false;
             }
 
-            _user = BsonSerializer.Deserialize<User>(response);
+            CurrentUser = response;
 
-            return _user.login;
+            return true;
         }
 
-        public string NewUser(string login, string password)
+        public static bool NewUser(string login, string password)
         {
-            var filter = Builders<BsonDocument>.Filter.Eq("login", login);
-
-            var checkUser = _userCollection.Find(filter).FirstOrDefault();
+            User checkUser = _userCollection.Find(u => u.login == login).FirstOrDefault();
 
             if(checkUser != null)
             {
-                return "User already created";
+                return false;
             }
 
-            var document = new BsonDocument { { "login", login }, {"password", password}};
+            checkUser = new User() { login = login, password = password };
 
-            _userCollection.InsertOne(document);
+            _userCollection.InsertOne(checkUser);
 
-            checkUser = _userCollection.Find(filter).FirstOrDefault();
+            //TODO: обработать ошибки
+            checkUser = _userCollection.Find(u => u.login == login).FirstOrDefault();
 
-            _user = BsonSerializer.Deserialize<User>(checkUser);
+            CurrentUser = checkUser;
 
-            return _user.login;
+            return true;
+        }
+
+        public static List<TaskInfo> GetTasks()
+        {
+            var tasks = _taskCollection.Find(t => t._userId == CurrentUser._id)?.ToList();
+
+            return tasks;
+        }
+
+        public static void AddTask(TaskInfo task)
+        {
+            task._userId = CurrentUser._id;
+
+            _taskCollection.InsertOne(task);
         }
     }
 }

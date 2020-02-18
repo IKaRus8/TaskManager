@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,20 +10,16 @@ public class BaseTask : MonoBehaviour
     public Text description;
     public Image background;
 
-    public bool IsDone { get; set; }
-    public string DescriptionText { get; set; }
-
-    public ObjectId _id;
-    public TaskType type;
+    public TaskInfo taskInfo;
 
     protected Color defColor;
 
     virtual public void Awake()
     {
-        IsDone = false;
+        taskInfo._isDone = false;
         defColor = background.color;
 
-        description.text = DescriptionText;
+        description.text = taskInfo._descriptionText;
     }
 
     virtual public void Start()
@@ -37,7 +34,7 @@ public class BaseTask : MonoBehaviour
 
     virtual public void Construct(string text)
     {
-        DescriptionText = text;
+        taskInfo._descriptionText = text;
     }
 
     virtual public void Change(string text)
@@ -47,12 +44,12 @@ public class BaseTask : MonoBehaviour
 
     virtual public void Remove()
     {
-        type = TaskType.Deleted;
+        taskInfo.deleted = true;
         Destroy(gameObject);
     }
 
     virtual protected void OnToggleValueChanged(bool value) 
-    { 
-        IsDone = value;
+    {
+        taskInfo._isDone = value;
     }
 }

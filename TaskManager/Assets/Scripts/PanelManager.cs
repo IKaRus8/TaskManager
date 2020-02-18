@@ -23,10 +23,7 @@ public class PanelManager : MonoBehaviour
 
     public void EnableBackground(bool value)
     {
-        if (!panelBack.gameObject.activeSelf)
-        {
-            panelBack.SetActive(value); 
-        }
+        panelBack.SetActive(value);
     }
 
     public void SwitchOffPanels()
