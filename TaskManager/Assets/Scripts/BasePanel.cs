@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BasePanel : MonoBehaviour
 {
@@ -22,12 +17,12 @@ public class BasePanel : MonoBehaviour
         
     }
 
-    public void Show()
+    public virtual void Show()
     {
         gameObject.SetActive(true);
     }
 
-    public void Close()
+    public virtual void Close()
     {
         gameObject.SetActive(false);
     }

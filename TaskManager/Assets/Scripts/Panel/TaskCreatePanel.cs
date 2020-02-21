@@ -5,12 +5,13 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TaskCreatePanel : BasePanel
+public class TaskCreatePanel : TempPanel
 {
     public Toggle RecurringType;
     public Button weekChangeButton;
     public Button dayChangeButton;
     public Button createButton;
+    public Button closeButton;
 
     [Space]
     public DayItem dayWeekItemGo;
@@ -18,9 +19,10 @@ public class TaskCreatePanel : BasePanel
     [Space]
     public InputField description;
     public GameObject dayGo;
-    public GameObject weekGo;
+    public GameObject weekParentGo;
 
     private TaskManager _taskManager => TaskManager.Instance;
+    private PanelManager _panelManager => PanelManager.Instance;
     private WeekController Week { get; set; }
     private DayOfWeek Day { get; set; }
     private List<DayItem> Days { get; set; }
@@ -32,6 +34,7 @@ public class TaskCreatePanel : BasePanel
         base.Awake();
 
         createButton.onClick.AddListener(Create);
+        closeButton.onClick.AddListener(Close);
 
         Days = dayGo.GetComponentsInChildren<DayItem>().ToList();
     }
@@ -40,7 +43,7 @@ public class TaskCreatePanel : BasePanel
     {
         base.Start();
 
-        weekGo.SetActive(false);
+        weekParentGo.SetActive(false);
         dayGo.SetActive(false);
 
         Construct();
@@ -50,31 +53,39 @@ public class TaskCreatePanel : BasePanel
     {
         _taskManager.Weeks.ForEach(w => 
         {
-            DayItem controller = Instantiate(dayWeekItemGo, weekGo.transform);
+            DayItem controller = Instantiate(dayWeekItemGo, weekParentGo.transform);
 
             controller.Week = w;
             controller.text.text = w.WeekName;
             controller.button.onClick.AddListener(() => OnWeekButtonClick(controller));
         });
 
-        Days.ForEach(d => d.button.onClick.AddListener(() => OnDayButtonClick(d)));
-
         Week = _taskManager.Weeks?.FirstOrDefault();
+
+        Days.ForEach(d => d.button.onClick.AddListener(() => OnDayButtonClick(d)));
     }
 
+    //TODO: обработать исключения
     private void Create()
     {
+        if(description.text == "")
+        {
+            return;
+        }
+
         TaskInfo newtask = new TaskInfo
         {
             isRecurring = RecurringType.isOn,
             _descriptionText = description.text,
-            _weekname = Week.WeekName,
+            _weekName = Week.WeekName,
             _dayOfWeek = Day
         };
 
         Week.AddTask(newtask);
 
         Storage.Save(newtask);
+
+        Close();
     }
 
     private void OnWeekButtonClick(DayItem item)
@@ -83,7 +94,7 @@ public class TaskCreatePanel : BasePanel
 
         weekChangeButton.GetComponentInChildren<Text>().text = Week.WeekName;
 
-        weekGo.gameObject.SetActive(false);
+        weekParentGo.gameObject.SetActive(false);
     }
 
     private void OnDayButtonClick(DayItem item)
@@ -93,5 +104,12 @@ public class TaskCreatePanel : BasePanel
         dayChangeButton.GetComponentInChildren<Text>().text = Enum.GetName(typeof(DayOfWeek), Day);
 
         dayGo.gameObject.SetActive(false);
+    }
+
+    public override void Close()
+    {
+        _panelManager.EnableBackground(false);
+
+        base.Close();
     }
 }

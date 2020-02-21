@@ -13,6 +13,7 @@ namespace DataBase
         public Toggle registrationToggle;
 
         private PanelManager _panelManager => PanelManager.Instance;
+        private TaskManager _taskManager => TaskManager.Instance;
 
         private Regex regex;
         private string regexPattern = "^[a-zA-Z0-9]{3,10}$";
@@ -57,12 +58,14 @@ namespace DataBase
 
         private void SignIn()
         {
-            bool isLogin = MongoDbAtlasManager.TakeUser(login.text, password.text);
+            User user = MongoDbAtlasManager.TakeUser(login.text, password.text);
 
-            if (isLogin)
+            if (user != null)
             {
                 _panelManager.SwitchOffPanels();
                 _panelManager.EnableBackground(false);
+
+                _taskManager.OnAuthorization(user.weeks);
             }
             else
             {
@@ -72,16 +75,18 @@ namespace DataBase
 
         private void SignUp()
         {
-            bool isLogin = MongoDbAtlasManager.NewUser(login.text, password.text);
+            User user = MongoDbAtlasManager.NewUser(login.text, password.text);
 
-            if (isLogin)
+            if (user != null)
             {
                 _panelManager.SwitchOffPanels();
                 _panelManager.EnableBackground(false);
+
+                _taskManager.OnAuthorization(user.weeks);
             }
             else
             {
-                message.text = "User already created"; 
+                message.text = "User already created";
             }
         }
     }

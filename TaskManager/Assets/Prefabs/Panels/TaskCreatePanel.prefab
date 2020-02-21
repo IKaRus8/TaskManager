@@ -1358,12 +1358,13 @@ MonoBehaviour:
   RecurringType: {fileID: 4711436678255619462}
   weekChangeButton: {fileID: 2112246788395572746}
   dayChangeButton: {fileID: 1132218824613323452}
+  createButton: {fileID: 713186260030266597}
+  closeButton: {fileID: 6572863307756480978}
   dayWeekItemGo: {fileID: 4816734600188063572, guid: e37bb9c3e0f278e45aad4e277d7a75f3,
     type: 3}
-  createButton: {fileID: 713186260030266597}
   description: {fileID: 7606983454668785001}
   dayGo: {fileID: 4418895529195935445}
-  weekGo: {fileID: 2334659642514470107}
+  weekParentGo: {fileID: 2334659642514470107}
 --- !u!1 &5324584218966140406
 GameObject:
   m_ObjectHideFlags: 0

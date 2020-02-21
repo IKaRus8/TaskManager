@@ -29,12 +29,21 @@ public class TaskManager : MonoBehaviour
     private void Start()
     {
         weekCreateDialog = _panelManager.GetPanel<DialogPanel>();
-        taskCreatePanel = _panelManager.GetPanel<TaskCreatePanel>();
     }
 
     public void CreateTask()
     {
 
+    }
+
+    public void AddWeek(WeekController newWeek)
+    {
+        if (newWeek != null)
+        {
+            newWeek.FillDays();
+
+            Weeks.Add(newWeek); 
+        }
     }
 
     public void AddWeek(string weekName)
@@ -43,7 +52,7 @@ public class TaskManager : MonoBehaviour
 
         Weeks.Add(newWeek);
 
-        Save();
+        Storage.Update(newWeek);
     }
 
     public void Save()
@@ -51,19 +60,26 @@ public class TaskManager : MonoBehaviour
         Storage.Save();
     }
 
-    public void Load()
+    public void OnAuthorization(List<WeekController> weeks)
+    {
+        weeks.ForEach(w => AddWeek(w));
+
+        LoadTasks();
+    }
+
+    public void LoadTasks()
     {
         var tasks = Storage.Load();
 
         foreach(var task in tasks)
         {
+            var week = Weeks.FirstOrDefault(w => w.WeekName == task._weekName);
 
+            if (week != null)
+            {
+                week.AddTask(task);
+            }
         }
-    }
-
-    public void Update()
-    {
-        Storage.Update();
     }
 
     public void WeekDialogConstruct()
@@ -88,6 +104,8 @@ public class TaskManager : MonoBehaviour
     {
         _panelManager.SwitchOffPanels();
         _panelManager.EnableBackground(true);
+
+        taskCreatePanel = _panelManager.CreatePanel<TaskCreatePanel>();
         taskCreatePanel.Show();
     }
 }

@@ -17,7 +17,7 @@ public class TaskInfo
 
     public bool deleted;
 
-    public string _weekname;
+    public string _weekName;
 
     public DayOfWeek _dayOfWeek;
 }

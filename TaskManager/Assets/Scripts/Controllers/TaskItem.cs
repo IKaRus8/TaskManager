@@ -25,7 +25,7 @@ public class TaskItem : BaseTask
     {
         Construct(text);
 
-        taskInfo._weekname = weekName;
+        taskInfo._weekName = weekName;
         taskInfo._dayOfWeek = dayOfWeek;
     }
 

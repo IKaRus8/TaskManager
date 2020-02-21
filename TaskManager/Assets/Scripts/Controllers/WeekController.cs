@@ -18,7 +18,14 @@ public class WeekController
         weekNumber = number;
         WeekName = weekName + $"({weekNumber})";
 
-        foreach(DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
+        FillDays();
+    }
+
+    public void FillDays()
+    {
+        days = new List<DayController>();
+
+        foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
         {
             DayController newDay = new DayController(day);
 

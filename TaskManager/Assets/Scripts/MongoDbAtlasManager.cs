@@ -3,6 +3,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DataBase
 {
@@ -23,30 +24,27 @@ namespace DataBase
             _taskCollection = _database.GetCollection<TaskInfo>("Tasks");
         }
 
-        public static bool TakeUser(string login, string password)
+        public static User TakeUser(string login, string password)
         {
             User response = _userCollection.Find(u => u.login == login && u.password == password).FirstOrDefault();
 
-            if(response == null)
-            {
-                return false;
-            }
-
             CurrentUser = response;
 
-            return true;
+            return CurrentUser;
         }
 
-        public static bool NewUser(string login, string password)
+        public static User NewUser(string login, string password)
         {
             User checkUser = _userCollection.Find(u => u.login == login).FirstOrDefault();
 
             if(checkUser != null)
             {
-                return false;
+                CurrentUser = checkUser;
+
+                return CurrentUser;
             }
 
-            checkUser = new User() { login = login, password = password };
+            checkUser = new User() { login = login, password = password, weeks = new List<WeekController>() };
 
             _userCollection.InsertOne(checkUser);
 
@@ -55,7 +53,7 @@ namespace DataBase
 
             CurrentUser = checkUser;
 
-            return true;
+            return CurrentUser;
         }
 
         public static List<TaskInfo> GetTasks()
@@ -70,6 +68,15 @@ namespace DataBase
             task._userId = CurrentUser._id;
 
             _taskCollection.InsertOne(task);
+        }
+
+        public static void UpdateUser(WeekController week)
+        {
+            var filter = Builders<User>.Filter.Eq(u => u._id, CurrentUser._id);
+
+            var update = Builders<User>.Update.AddToSet(u => u.weeks, week);
+
+            var result = _userCollection.UpdateOne(filter, update);
         }
     }
 }
