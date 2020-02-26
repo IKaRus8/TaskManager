@@ -64,6 +64,7 @@ public class CalendarController : BasePanel
         }
 
         dayPicker.SetOtherDayDisable();
+        //dayPicker.DisableOtherDayOfWeek(new List<DayOfWeek> { DayOfWeek.Monday});
     }
 
     private void OnYearToggleClick(int year)
@@ -74,6 +75,7 @@ public class CalendarController : BasePanel
     private void OnMonthToggleClick(int month)
     {
         SelectedDate = new DateTime(SelectedDate.Year, month, SelectedDate.Day);
+        dayPicker.selectedDate = SelectedDate;
     }
 
     private void OnDayToggleClick(int day)

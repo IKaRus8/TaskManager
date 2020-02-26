@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BaseTask : MonoBehaviour
+public class BaseTask : TempPanel
 {
+    public Text name;
     public Text description;
     public Image background;
 
@@ -16,10 +17,7 @@ public class BaseTask : MonoBehaviour
 
     virtual public void Awake()
     {
-        taskInfo._isDone = false;
         defColor = background.color;
-
-        description.text = taskInfo._descriptionText;
     }
 
     virtual public void Start()
@@ -51,5 +49,10 @@ public class BaseTask : MonoBehaviour
     virtual protected void OnToggleValueChanged(bool value) 
     {
         taskInfo._isDone = value;
+    }
+
+    public void SetText()
+    {
+        description.text = taskInfo._descriptionText;
     }
 }

@@ -6,9 +6,9 @@ using UnityEngine;
 
 public class DayPicker : DatePicker
 {
-    public DayOfWeek DayName { get; set; }
-
     private bool first = true;
+
+    public DateTime selectedDate;
 
     public override void Awake()
     {
@@ -56,5 +56,34 @@ public class DayPicker : DatePicker
     public void SetOtherDayDisable()
     {
         toggles.Where(t => t.state == DateToggleState.Active && t.Value == 0).ToList().ForEach(t => t.SetDisableState());
+    }
+
+    public void DisableOtherDayOfWeek(List<DayOfWeek> activeDays)
+    {
+        toggles.Where(t =>
+        {
+            if (t.state == DateToggleState.Active)
+            {
+                var tempDate = new DateTime(selectedDate.Year, selectedDate.Month, t.Value);
+
+                var dayOfWeek = DateInfo.Calendar.GetDayOfWeek(tempDate);
+
+                return !activeDays.Contains(dayOfWeek); 
+            }
+            else
+            {
+                return false;
+            }
+            
+        }).ToList().ForEach(t => t.SetDisableState());
+    }
+
+    public void ActiveOneDayOfWeek()
+    {
+        System.Globalization.CultureInfo ci = System.Threading.Thread.CurrentThread.CurrentCulture;
+
+        DayOfWeek fdow = ci.DateTimeFormat.FirstDayOfWeek;
+        DayOfWeek today = DateTime.Now.DayOfWeek;
+        DateTime sow = DateTime.Now.AddDays(-(today - fdow)).Date;
     }
 }

@@ -9,6 +9,8 @@ public class WeekController
     public string WeekName { get; set; }
     public int weekNumber { get; set; }
 
+    public DateTime startWeek;
+
     public bool isWeekDone;
 
     private List<DayController> days = new List<DayController>();
@@ -49,5 +51,17 @@ public class WeekController
         int result = doneTaskCount / days.Count();
 
         return result;
+    }
+
+    public DayController GetDay(DayOfWeek dayOfWeek)
+    {
+        var day = days.FirstOrDefault(d => d.DayOfWeek == dayOfWeek);
+
+        return day;
+    }
+
+    public void SetDayDate()
+    {
+
     }
 }

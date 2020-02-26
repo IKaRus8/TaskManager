@@ -66,6 +66,8 @@ namespace DataBase
                 _panelManager.EnableBackground(false);
 
                 _taskManager.OnAuthorization(user.weeks);
+
+                MessageManager.SetFooterInfo($"Привет {user.login}");
             }
             else
             {
@@ -83,6 +85,8 @@ namespace DataBase
                 _panelManager.EnableBackground(false);
 
                 _taskManager.OnAuthorization(user.weeks);
+
+                MessageManager.SetFooterInfo($"Привет {user.login}");
             }
             else
             {

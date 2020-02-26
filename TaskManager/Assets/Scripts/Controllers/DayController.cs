@@ -11,7 +11,7 @@ public class DayController
 
     public bool isDayDone;
 
-    private List<TaskInfo> tasks = new List<TaskInfo>();
+    public List<TaskInfo> tasks = new List<TaskInfo>();
 
     public DayController(DayOfWeek day)
     {

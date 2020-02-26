@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -50,6 +51,17 @@ public class TaskManager : MonoBehaviour
     {
         WeekController newWeek = new WeekController(Weeks.Count + 1, weekName);
 
+        if (Weeks.Any())
+        {
+            newWeek.startWeek = GetNextWeekDay(Weeks.Last().startWeek.AddDays(1));
+        }
+        else
+        {
+            DateTime input = DateTime.Now;
+            int delta = DayOfWeek.Monday - input.DayOfWeek;
+            newWeek.startWeek = input.AddDays(delta);
+        }
+
         Weeks.Add(newWeek);
 
         Storage.Update(newWeek);
@@ -62,7 +74,7 @@ public class TaskManager : MonoBehaviour
 
     public void OnAuthorization(List<WeekController> weeks)
     {
-        weeks.ForEach(w => AddWeek(w));
+        weeks?.OrderBy(w => w?.startWeek)?.ToList().ForEach(w => AddWeek(w));
 
         LoadTasks();
     }
@@ -80,6 +92,8 @@ public class TaskManager : MonoBehaviour
                 week.AddTask(task);
             }
         }
+
+        GetCurrentDay();
     }
 
     public void WeekDialogConstruct()
@@ -98,6 +112,16 @@ public class TaskManager : MonoBehaviour
     private void OnWeekCreate(string text)
     {
         AddWeek(text);
+
+        //var calendar = _panelManager.GetPanel<CalendarController>();
+        //_panelManager.EnableBackground(true);
+        //calendar.Show();
+
+        //get monday ---------------------------------------------------------------------------------------------
+        //System.Globalization.CultureInfo ci = System.Threading.Thread.CurrentThread.CurrentCulture;
+        //DayOfWeek fdow = ci.DateTimeFormat.FirstDayOfWeek;
+        //DayOfWeek today = DateTime.Now.DayOfWeek;
+        //DateTime sow = DateTime.Now.AddDays(-(today - fdow)).Date;
     }
 
     public void ShowTaskCreatePanel()
@@ -105,7 +129,45 @@ public class TaskManager : MonoBehaviour
         _panelManager.SwitchOffPanels();
         _panelManager.EnableBackground(true);
 
-        taskCreatePanel = _panelManager.CreatePanel<TaskCreatePanel>();
+        taskCreatePanel = _panelManager.CreatePanel<TaskCreatePanel>(_panelManager.panelBack.transform);
         taskCreatePanel.Show();
+    }
+
+    public static DateTime GetNextWeekDay(DateTime start, DayOfWeek day = DayOfWeek.Monday)
+    {
+        // The (... + 7) % 7 ensures we end up with a value in the range [0, 6]
+        int daysToAdd = ((int)day - (int)start.DayOfWeek + 7) % 7;
+        return start.AddDays(daysToAdd);
+    }
+
+    public void GetCurrentDay()
+    {
+        var week = Weeks.Where(w => w.startWeek <= DateTime.Now).Max();
+
+        if(week.startWeek.AddDays(7) < DateTime.Now)
+        {
+            var firstWeek = Weeks.FirstOrDefault(w => w.startWeek == Weeks.Min(m => m.startWeek));
+
+            firstWeek.startWeek = GetNextWeekDay(week.startWeek);
+
+            GetCurrentDay();
+        }
+
+        SetTodayValue(week);
+    }
+
+    public void SetTodayValue(WeekController week)
+    {
+        var day = week.GetDay(DateTime.Now.DayOfWeek);
+
+        MessageManager.SetHeaderCaption($"Сегодня {week.WeekName}, {day.DayOfWeek.ToString()}");
+
+        foreach (var task in day.tasks)
+        {
+            var taskItem = _panelManager.CreatePanel<TaskItem>(_panelManager.taskConatainer.transform);
+
+            taskItem.taskInfo = task;
+            taskItem.SetText();
+        }
     }
 }

@@ -4115,10 +4115,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 17
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 1
     m_MaxSize: 40
     m_Alignment: 3
     m_AlignByGeometry: 0
@@ -5178,10 +5178,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 17
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 1
     m_MaxSize: 40
     m_Alignment: 5
     m_AlignByGeometry: 0
@@ -5857,8 +5857,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1415623392}
   - component: {fileID: 1415623391}
+  - component: {fileID: 1415623393}
   m_Layer: 0
-  m_Name: PanelManager
+  m_Name: Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5877,12 +5878,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panelBack: {fileID: 649171313}
+  taskConatainer: {fileID: 5329273981331234840}
   panels:
   - {fileID: 1703803567}
   - {fileID: 183280743}
   - {fileID: 5287919372026506040}
   prefabs:
   - {fileID: 3351418627455270595, guid: 09479e61a45b4e14e8db4f02035d92a8, type: 3}
+  - {fileID: 414200300664644465, guid: e64f1810c2e1fd24391b3a32ddcae64e, type: 3}
 --- !u!4 &1415623392
 Transform:
   m_ObjectHideFlags: 0
@@ -5897,6 +5900,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1415623393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1415623390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9e0b38f86460724bb2bc45f1ac8e7a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  headerCaption: {fileID: 1024408090}
+  FooterInfo: {fileID: 458207447}
+  menuCaption: {fileID: 1679869960}
 --- !u!1 &1443583283
 GameObject:
   m_ObjectHideFlags: 0
@@ -6338,10 +6356,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 17
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 1
     m_MaxSize: 40
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -7671,6 +7689,12 @@ PrefabInstance:
 --- !u!224 &5329273981331234839 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5005475147133400405, guid: 535f486bf052f5d4496678bc8d864662,
+    type: 3}
+  m_PrefabInstance: {fileID: 5329273981331234838}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5329273981331234840 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4732806291899717492, guid: 535f486bf052f5d4496678bc8d864662,
     type: 3}
   m_PrefabInstance: {fileID: 5329273981331234838}
   m_PrefabAsset: {fileID: 0}

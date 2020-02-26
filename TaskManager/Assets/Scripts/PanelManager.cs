@@ -10,6 +10,8 @@ public class PanelManager : MonoBehaviour
 
     public GameObject panelBack;
 
+    public GameObject taskConatainer;
+
     //TODO: создавать из префабов
     public List<BasePanel> panels;
     public List<TempPanel> prefabs;
@@ -53,13 +55,13 @@ public class PanelManager : MonoBehaviour
         }
     }
 
-    public T CreatePanel<T>() where T : TempPanel
+    public T CreatePanel<T>(Transform parent) where T : TempPanel
     {
         var prefab = prefabs.FirstOrDefault(p => p is T);
 
         if (prefab != null)
         {
-            var panel = Instantiate(prefab, panelBack.transform);
+            var panel = Instantiate(prefab, parent);
 
             return panel.GetComponent<T>();
         }
@@ -67,5 +69,10 @@ public class PanelManager : MonoBehaviour
         {
             return default;
         }
+    }
+
+    public void FillTask(List<TaskInfo> tasks)
+    {
+
     }
 }

@@ -1,5 +1,4 @@
-﻿
-using DataBase;
+﻿using DataBase;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
