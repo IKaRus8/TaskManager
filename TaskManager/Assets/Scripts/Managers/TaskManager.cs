@@ -10,10 +10,7 @@ public class TaskManager : MonoBehaviour
 
     public List<WeekController> Weeks { get; set; }
 
-    private DialogPanel weekCreateDialog;
     private TaskCreatePanel taskCreatePanel;
-
-    private StorageManager Storage = new StorageManager();
 
     private PanelManager _panelManager => PanelManager.Instance;
 
@@ -25,11 +22,6 @@ public class TaskManager : MonoBehaviour
         }
 
         Weeks = new List<WeekController>();
-    }
-
-    private void Start()
-    {
-        weekCreateDialog = _panelManager.GetPanel<DialogPanel>();
     }
 
     public void CreateTask()
@@ -53,35 +45,40 @@ public class TaskManager : MonoBehaviour
 
         if (Weeks.Any())
         {
-            newWeek.startWeek = GetNextWeekDay(Weeks.Last().startWeek.AddDays(1));
+            newWeek.startWeek = GetNextWeekStartDay(Weeks.Last().startWeek);
         }
         else
         {
-            DateTime input = DateTime.Now;
+            DateTime input = new DateTime(2020, 1, 6, 10, 0, 0); //DateTime.Now;
             int delta = DayOfWeek.Monday - input.DayOfWeek;
             newWeek.startWeek = input.AddDays(delta);
         }
 
         Weeks.Add(newWeek);
 
-        Storage.Update(newWeek);
+        StorageManager.Update(newWeek);
     }
 
     public void Save()
     {
-        Storage.Save();
+        StorageManager.Save();
     }
 
     public void OnAuthorization(List<WeekController> weeks)
     {
-        weeks?.OrderBy(w => w?.startWeek)?.ToList().ForEach(w => AddWeek(w));
+        if (weeks != null && weeks.Any())
+        {
+            weeks.OrderBy(w => w?.startWeek)?.ToList().ForEach(w => AddWeek(w));
 
-        LoadTasks();
+            LoadTasks();
+
+            ShowTodayTasks(GetCurrentWeek()); 
+        }
     }
 
     public void LoadTasks()
     {
-        var tasks = Storage.Load();
+        var tasks = StorageManager.Load();
 
         foreach(var task in tasks)
         {
@@ -92,20 +89,19 @@ public class TaskManager : MonoBehaviour
                 week.AddTask(task);
             }
         }
-
-        GetCurrentDay();
     }
 
     public void WeekDialogConstruct()
     {
-        if (weekCreateDialog != null && weekCreateDialog != default)
+        var panel = _panelManager.CreatePanel<DialogPanel>(_panelManager.panelBack.transform);
+
+        if (panel != default)
         {
-            weekCreateDialog.input.text = $"Неделя {Weeks.Count + 1}";
-            weekCreateDialog.Action = OnWeekCreate;
+            panel.input.text = $"Неделя {Weeks.Count + 1}";
+            panel.Action = OnWeekCreate;
 
             _panelManager.SwitchOffPanels();
             _panelManager.EnableBackground(true);
-            weekCreateDialog.Show();
         }
     }
 
@@ -133,30 +129,37 @@ public class TaskManager : MonoBehaviour
         taskCreatePanel.Show();
     }
 
-    public static DateTime GetNextWeekDay(DateTime start, DayOfWeek day = DayOfWeek.Monday)
+    public static DateTime GetNextWeekStartDay(DateTime start, DayOfWeek day = DayOfWeek.Monday)
     {
+        start = start.AddDays(1);
+
         // The (... + 7) % 7 ensures we end up with a value in the range [0, 6]
         int daysToAdd = ((int)day - (int)start.DayOfWeek + 7) % 7;
         return start.AddDays(daysToAdd);
     }
 
-    public void GetCurrentDay()
+    public WeekController GetCurrentWeek()
     {
-        var week = Weeks.Where(w => w.startWeek <= DateTime.Now).Max();
+        var week = Weeks.FirstOrDefault(w => w.weekNumber == Weeks.Where(w1 => w1.startWeek <= DateTime.Now).Max(w2 => w2.weekNumber));
 
-        if(week.startWeek.AddDays(7) < DateTime.Now)
+        if(week != null && week.startWeek.AddDays(7) < DateTime.Now)
         {
-            var firstWeek = Weeks.FirstOrDefault(w => w.startWeek == Weeks.Min(m => m.startWeek));
+            Weeks = Weeks.OrderBy(w => w.weekNumber).ToList();
 
-            firstWeek.startWeek = GetNextWeekDay(week.startWeek);
+            Weeks.FirstOrDefault().startWeek = GetNextWeekStartDay(week.startWeek);
 
-            GetCurrentDay();
+            for (int i = 1; i < Weeks.Count; i++)
+            {
+                Weeks[i].startWeek = GetNextWeekStartDay(Weeks[i - 1].startWeek);
+            }
+
+            GetCurrentWeek();
         }
 
-        SetTodayValue(week);
+        return week;
     }
 
-    public void SetTodayValue(WeekController week)
+    public void ShowTodayTasks(WeekController week)
     {
         var day = week.GetDay(DateTime.Now.DayOfWeek);
 
@@ -166,8 +169,17 @@ public class TaskManager : MonoBehaviour
         {
             var taskItem = _panelManager.CreatePanel<TaskItem>(_panelManager.taskConatainer.transform);
 
-            taskItem.taskInfo = task;
-            taskItem.SetText();
+            taskItem.Construct(task);
+        }
+    }
+
+    public void CheckTaskToShow(TaskInfo task)
+    {
+        if(task._weekName == GetCurrentWeek().WeekName && task._dayOfWeek == DateTime.Now.DayOfWeek)
+        {
+            var taskItem = _panelManager.CreatePanel<TaskItem>(_panelManager.taskConatainer.transform);
+
+            taskItem.Construct(task);
         }
     }
 }

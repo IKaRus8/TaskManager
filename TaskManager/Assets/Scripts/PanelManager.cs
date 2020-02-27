@@ -14,7 +14,7 @@ public class PanelManager : MonoBehaviour
 
     //TODO: создавать из префабов
     public List<BasePanel> panels;
-    public List<TempPanel> prefabs;
+    public List<GameObject> prefabs;
 
     private void Awake()
     {
@@ -55,9 +55,9 @@ public class PanelManager : MonoBehaviour
         }
     }
 
-    public T CreatePanel<T>(Transform parent) where T : TempPanel
+    public T CreatePanel<T>(Transform parent) where T : ITempPanel
     {
-        var prefab = prefabs.FirstOrDefault(p => p is T);
+        var prefab = prefabs.FirstOrDefault(p => p.GetComponent<T>() != null);
 
         if (prefab != null)
         {

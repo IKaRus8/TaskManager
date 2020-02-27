@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BaseTask : TempPanel
+public class BaseTask : MonoBehaviour, ITempPanel
 {
     public Text name;
     public Text description;
@@ -43,7 +43,7 @@ public class BaseTask : TempPanel
     virtual public void Remove()
     {
         taskInfo.deleted = true;
-        Destroy(gameObject);
+        Close();
     }
 
     virtual protected void OnToggleValueChanged(bool value) 
@@ -54,5 +54,10 @@ public class BaseTask : TempPanel
     public void SetText()
     {
         description.text = taskInfo._descriptionText;
+    }
+
+    public void Close()
+    {
+        Destroy(gameObject);
     }
 }

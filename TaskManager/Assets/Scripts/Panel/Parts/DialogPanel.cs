@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class DialogPanel : BasePanel
+public class DialogPanel : BasePanel, ITempPanel
 {
     public InputField input;
     public Button okButton;
@@ -19,6 +19,8 @@ public class DialogPanel : BasePanel
         input.onEndEdit.AddListener(OnInputFieldChange);
 
         okButton.onClick.AddListener(() => Action.Invoke(input.text));
+        okButton.onClick.AddListener(Close);
+        cancelButton.onClick.AddListener(Close);
     }
 
     private void OnInputFieldChange(string text)
@@ -31,5 +33,12 @@ public class DialogPanel : BasePanel
         {
             okButton.interactable = false;
         }
+    }
+
+    public override void Close()
+    {
+        PanelManager.Instance.EnableBackground(false);
+
+        Destroy(gameObject);
     }
 }

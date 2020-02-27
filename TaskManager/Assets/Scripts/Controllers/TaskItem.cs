@@ -21,12 +21,10 @@ public class TaskItem : BaseTask
         base.Construct(text);
     }
 
-    public void Construct(string text, string weekName, DayOfWeek dayOfWeek)
+    public void Construct(TaskInfo task)
     {
-        Construct(text);
-
-        taskInfo._weekName = weekName;
-        taskInfo._dayOfWeek = dayOfWeek;
+        taskInfo = task;
+        SetText();
     }
 
     override protected void OnToggleValueChanged(bool value)

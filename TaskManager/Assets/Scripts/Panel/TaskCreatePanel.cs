@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TaskCreatePanel : TempPanel
+public class TaskCreatePanel : BasePanel, ITempPanel
 {
     public Toggle RecurringType;
     public Button weekChangeButton;
@@ -26,8 +26,6 @@ public class TaskCreatePanel : TempPanel
     private WeekController Week { get; set; }
     private DayOfWeek Day { get; set; }
     private List<DayItem> Days { get; set; }
-
-    private StorageManager Storage = new StorageManager();
 
     protected override void Awake()
     {
@@ -73,7 +71,7 @@ public class TaskCreatePanel : TempPanel
             return;
         }
 
-        TaskInfo newtask = new TaskInfo
+        TaskInfo newTask = new TaskInfo
         {
             isRecurring = RecurringType.isOn,
             _descriptionText = description.text,
@@ -81,9 +79,11 @@ public class TaskCreatePanel : TempPanel
             _dayOfWeek = Day
         };
 
-        Week.AddTask(newtask);
+        Week.AddTask(newTask);
 
-        Storage.Save(newtask);
+        _taskManager.CheckTaskToShow(newTask);
+
+        StorageManager.Save(newTask);
 
         Close();
     }
@@ -110,6 +110,6 @@ public class TaskCreatePanel : TempPanel
     {
         _panelManager.EnableBackground(false);
 
-        base.Close();
+        Destroy(gameObject);
     }
 }
