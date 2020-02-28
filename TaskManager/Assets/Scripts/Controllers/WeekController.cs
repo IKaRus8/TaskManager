@@ -64,4 +64,11 @@ public class WeekController
     {
 
     }
+
+    public void UpdateWeek()
+    {
+        days.ForEach(d => d.UpdateTasks());
+
+        isWeekDone = false;
+    }
 }

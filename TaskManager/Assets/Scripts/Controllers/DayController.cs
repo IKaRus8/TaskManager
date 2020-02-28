@@ -29,8 +29,20 @@ public class DayController
     {
         int doneTaskCount = tasks.Where(t => t._isDone).Count();
 
-        int result = doneTaskCount / tasks.Count();
+        int result = 0;
 
+        if(doneTaskCount > 0 && tasks.Any())
+        {
+            result = doneTaskCount / tasks.Count();
+        }
+            
         return result;
+    }
+
+    public void UpdateTasks()
+    {
+        tasks.ForEach(t => t._isDone = false);
+
+        DonePercent();
     }
 }

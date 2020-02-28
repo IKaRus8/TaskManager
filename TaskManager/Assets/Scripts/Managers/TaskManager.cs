@@ -153,10 +153,17 @@ public class TaskManager : MonoBehaviour
                 Weeks[i].startWeek = GetNextWeekStartDay(Weeks[i - 1].startWeek);
             }
 
+            UpdateWeeks();
+
             GetCurrentWeek();
         }
 
         return week;
+    }
+
+    private void UpdateWeeks()
+    {
+        Weeks.ForEach(w => w.UpdateWeek());
     }
 
     public void ShowTodayTasks(WeekController week)

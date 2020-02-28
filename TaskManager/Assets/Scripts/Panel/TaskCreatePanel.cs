@@ -7,11 +7,14 @@ using UnityEngine.UI;
 
 public class TaskCreatePanel : BasePanel, ITempPanel
 {
-    public Toggle RecurringType;
+    public Toggle taskType;
     public Button weekChangeButton;
     public Button dayChangeButton;
+    public Button CalendarButton;
     public Button createButton;
     public Button closeButton;
+
+    public CalendarController calendar;
 
     [Space]
     public DayItem dayWeekItemGo;
@@ -33,6 +36,10 @@ public class TaskCreatePanel : BasePanel, ITempPanel
 
         createButton.onClick.AddListener(Create);
         closeButton.onClick.AddListener(Close);
+
+        taskType.onValueChanged.AddListener(OnTypeToggleChanged);
+        CalendarButton.onClick.AddListener(OnCalendarButtonClick);
+        calendar.Callback = OnDaySelected;
 
         Days = dayGo.GetComponentsInChildren<DayItem>().ToList();
     }
@@ -73,7 +80,7 @@ public class TaskCreatePanel : BasePanel, ITempPanel
 
         TaskInfo newTask = new TaskInfo
         {
-            isRecurring = RecurringType.isOn,
+            isRecurring = taskType.isOn,
             _descriptionText = description.text,
             _weekName = Week.WeekName,
             _dayOfWeek = Day
@@ -111,5 +118,28 @@ public class TaskCreatePanel : BasePanel, ITempPanel
         _panelManager.EnableBackground(false);
 
         Destroy(gameObject);
+    }
+
+    private void OnCalendarButtonClick()
+    {
+        calendar.Show();
+    }
+
+    private void OnDaySelected(DateTime date)
+    {
+        var dateText = CalendarButton.GetComponentInChildren<Text>();
+        if(dateText != null)
+        {
+            dateText.text = date.ToString();//"Yy:Mm:Dd");
+        }
+
+        calendar.Close();
+    }
+
+    private void OnTypeToggleChanged(bool value)
+    {
+        weekChangeButton.gameObject.SetActive(value);
+        dayChangeButton.gameObject.SetActive(value);
+        CalendarButton.gameObject.SetActive(!value);
     }
 }

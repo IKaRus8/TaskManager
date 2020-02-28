@@ -4,12 +4,15 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class CalendarController : BasePanel
 {
     public DatePicker yearPicker;
     public DatePicker monthPicker;
     public DayPicker dayPicker;
+
+    public UnityAction<DateTime> Callback { get; set; }
 
     private DateTime SelectedDate { get; set; }
     private DateTime CurrentDate { get; set; }
@@ -81,6 +84,8 @@ public class CalendarController : BasePanel
     private void OnDayToggleClick(int day)
     {
         SelectedDate = new DateTime(SelectedDate.Year, SelectedDate.Month, day);
+
+        Callback?.Invoke(SelectedDate);
     }
 
     private void SetCurrentDay()
