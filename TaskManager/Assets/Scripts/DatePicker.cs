@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -11,31 +12,19 @@ public class DatePicker : MonoBehaviour
     public DateToggle togglePrefab;
     public GameObject parentGo;
     public UnityAction<int> Callback { get; set; }
-    public int CurrentValue { get; set; }
+    public DateTime CurrentValue { get; set; }
 
-    protected List<DateToggle> toggles;
-    protected DateTimeFormatInfo DateInfo { get; set; }
+    protected List<DateToggle> toggles = new List<DateToggle>();
+    protected DateTimeFormatInfo DateInfo = CultureInfo.GetCultureInfo("ru-Ru").DateTimeFormat;
 
     public virtual void Awake()
     {
-        toggles = new List<DateToggle>();
-
-        DateInfo = CultureInfo.GetCultureInfo("ru-Ru").DateTimeFormat;
+        CurrentValue = DateTime.Now;
     }
 
-    public virtual void AddToggle(int value)
+    public virtual void AddToggle(DateTime date, int value)
     {
-        DateToggle newToggle = Instantiate(togglePrefab, parentGo.transform);
-
-        newToggle.Construct(value, Callback);
-
-        if(value == CurrentValue)
-        {
-            newToggle.SetCurrentDateState();
-            newToggle.SetSelectedState();
-        }
-
-        toggles.Add(newToggle);
+       
     }
 
     public List<DateToggle> GetSelectedValues()
@@ -48,5 +37,10 @@ public class DatePicker : MonoBehaviour
     public void SetDate(int value)
     {
         toggles.FirstOrDefault(t => t.Value == value)?.SetSelectedState();
+    }
+
+    public void ShowHidePicker(bool value)
+    {
+        gameObject.SetActive(value);
     }
 }

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Globalization;
-using UnityEngine;
+using System.Linq;
 
 public class MonthPicker : DatePicker
 {
@@ -11,16 +8,24 @@ public class MonthPicker : DatePicker
     public override void Awake()
     {
         base.Awake();
-
-        CurrentValue = DateTime.Now.Month;
+        toggles = parentGo.GetComponentsInChildren<DateToggle>().ToList();
 
         gameObject.SetActive(false);
     }
 
-    public override void AddToggle(int value)
+    public override void AddToggle(DateTime date, int value)
     {
-        base.AddToggle(value);
+        MonthName = DateInfo.GetMonthName(value + 1);
 
-        MonthName = DateInfo.GetMonthName(value);
+        if (value < toggles.Count)
+        {
+            toggles[value].Construct(value + 1, Callback);
+            toggles[value].label.text = MonthName;
+
+            if(date.Month == value + 1)
+            {
+                toggles[value].SetCurrentDateState();
+            }
+        }
     }
 }

@@ -10,9 +10,16 @@ public class DateToggle : MonoBehaviour
     public Image background;
     public Text label;
     public Color currentDateColor;
+    public Color disableColor;
     public DateToggleState state;
     public int Value { get; set; }
     private UnityAction<int> Callback { get; set; }
+    private Color defColor;
+
+    private void Awake()
+    {
+        defColor = background.color;
+    }
 
     public void Construct(int value, UnityAction<int> callback)
     {
@@ -34,16 +41,19 @@ public class DateToggle : MonoBehaviour
         toggle.isOn = true;
     }
 
-    private void SetDefaultState()
+    public void SetDefaultState()
     {
-        toggle.isOn = false;
+        state = DateToggleState.Active;
+        background.color = defColor;
+        label.text = "0";
+        Value = 0;
     }
 
     public void SetDisableState()
     {
         toggle.interactable = false;
         state = DateToggleState.Disable;
-        background.color = Color.gray;
+        background.color = disableColor;
     }
 
     private void OnToggleValueChanged(bool value)

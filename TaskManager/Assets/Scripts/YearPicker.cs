@@ -9,8 +9,21 @@ public class YearPicker : DatePicker
     {
         base.Awake();
 
-        CurrentValue = DateTime.Now.Year;
-
         gameObject.SetActive(false);
+    }
+
+    public override void AddToggle(DateTime date, int value)
+    {
+        DateToggle newToggle = Instantiate(togglePrefab, parentGo.transform);
+
+        newToggle.Construct(value, Callback);
+
+        if (value == CurrentValue.Year)
+        {
+            newToggle.SetCurrentDateState();
+            //newToggle.SetSelectedState();
+        }
+
+        toggles.Add(newToggle);
     }
 }

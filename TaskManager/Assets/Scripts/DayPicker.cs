@@ -14,18 +14,16 @@ public class DayPicker : DatePicker
     {
         base.Awake();
 
-        CurrentValue = DateTime.Now.Day;
-
         toggles = parentGo.GetComponentsInChildren<DateToggle>().ToList();
     }
 
-    public void AddToggle(DateTime dateTime)
+    public override void AddToggle(DateTime date, int value)
     {
         if (first)
         {
             first = false;
 
-            DayOfWeek dayOfWeek = DateInfo.Calendar.GetDayOfWeek(dateTime);
+            DayOfWeek dayOfWeek = DateInfo.Calendar.GetDayOfWeek(date);
 
             if(dayOfWeek != DayOfWeek.Sunday)
             {
@@ -42,12 +40,12 @@ public class DayPicker : DatePicker
 
             if (toggle != null)
             {
-                toggle.Construct(dateTime.Day, Callback);
+                toggle.Construct(value, Callback);
 
-                if (dateTime.Day == CurrentValue)
+                if (date.ToShortDateString() == CurrentValue.ToShortDateString())
                 {
                     toggle.SetCurrentDateState();
-                    toggle.SetSelectedState();
+                    //toggle.SetSelectedState();
                 }
             }
         }
@@ -78,12 +76,9 @@ public class DayPicker : DatePicker
         }).ToList().ForEach(t => t.SetDisableState());
     }
 
-    public void ActiveOneDayOfWeek()
+    public void Clear()
     {
-        System.Globalization.CultureInfo ci = System.Threading.Thread.CurrentThread.CurrentCulture;
-
-        DayOfWeek fdow = ci.DateTimeFormat.FirstDayOfWeek;
-        DayOfWeek today = DateTime.Now.DayOfWeek;
-        DateTime sow = DateTime.Now.AddDays(-(today - fdow)).Date;
+        toggles.ForEach(t => t.SetDefaultState());
+        first = true;
     }
 }

@@ -5,12 +5,17 @@ using System.Globalization;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class CalendarController : BasePanel
 {
     public DatePicker yearPicker;
     public DatePicker monthPicker;
     public DayPicker dayPicker;
+
+    public Toggle yearToggle;
+    public Toggle MonthToggle;
+    public Toggle dayToggle;
 
     public UnityAction<DateTime> Callback { get; set; }
 
@@ -23,13 +28,17 @@ public class CalendarController : BasePanel
 
     protected override void Awake()
     {
-        SelectedDate = new DateTime();
-        CurrentDate = DateTime.Now;
+        SelectedDate = CurrentDate = DateTime.Now;
+
         DateInfo = CultureInfo.GetCultureInfo("ru-Ru").DateTimeFormat;
 
-        yearPicker.Callback = OnYearToggleClick;
-        monthPicker.Callback = OnMonthToggleClick;
-        dayPicker.Callback = OnDayToggleClick;
+        yearPicker.Callback = OnYearSelect;
+        monthPicker.Callback = OnMonthSelect;
+        dayPicker.Callback = OnDaySelect;
+
+        yearToggle.onValueChanged.AddListener(OnYearToggleChange);
+        MonthToggle.onValueChanged.AddListener(OnMonthToggleChange);
+        dayToggle.onValueChanged.AddListener(OnDayToggleChange);
     }
 
     protected override void Start()
@@ -43,53 +52,77 @@ public class CalendarController : BasePanel
     {
         for( int i = CurrentDate.Year; i <= CurrentDate.Year + AvailableYears; i++)
         {
-            yearPicker.AddToggle(i);
+            yearPicker.AddToggle(SelectedDate, i);
         }
     }
 
     private void FillMonth()
     {
-        for(int i = 1; i < DateInfo.MonthNames.Length; i++)
+        DateTime tempDate = SelectedDate;
+
+        for(int i = 0; i < DateInfo.MonthNames.Length; i++)
         {
-            monthPicker.AddToggle(i);
+            monthPicker.AddToggle(tempDate, i);
         }
     }
 
     private void FillDays()
     {
+        dayPicker.Clear();
+
         int dayCount = DateInfo.Calendar.GetDaysInMonth(SelectedDate.Year, SelectedDate.Month);
 
         for (var i = 0; i <= dayCount; i++)
         {
             DateTime dateTime = new DateTime(SelectedDate.Year, SelectedDate.Month, Mathf.Max(1, i));
 
-            dayPicker.AddToggle(dateTime);
+            dayPicker.AddToggle(dateTime, i);
         }
 
         dayPicker.SetOtherDayDisable();
         //dayPicker.DisableOtherDayOfWeek(new List<DayOfWeek> { DayOfWeek.Monday});
     }
 
-    private void OnYearToggleClick(int year)
+    private void OnYearSelect(int year)
     {
-        SelectedDate = new DateTime(year, SelectedDate.Month, SelectedDate.Day);
+        SelectedDate = new DateTime(year, 1, 1);
+
+        monthPicker.SetDate(1);
+
+        MonthToggle.isOn = true;
+
+        FillDays();
     }
 
-    private void OnMonthToggleClick(int month)
+    private void OnMonthSelect(int month)
     {
-        SelectedDate = new DateTime(SelectedDate.Year, month, SelectedDate.Day);
+        SelectedDate = new DateTime(SelectedDate.Year, month, 1);
+
         dayPicker.selectedDate = SelectedDate;
+
+        FillDays();
+        dayToggle.isOn = true;
     }
 
-    private void OnDayToggleClick(int day)
+    private void OnDaySelect(int day)
     {
         SelectedDate = new DateTime(SelectedDate.Year, SelectedDate.Month, day);
 
         Callback?.Invoke(SelectedDate);
     }
 
-    private void SetCurrentDay()
+    private void OnYearToggleChange(bool value)
     {
+        yearPicker.ShowHidePicker(value);
+    }
 
+    private void OnMonthToggleChange(bool value)
+    {
+        monthPicker.ShowHidePicker(value);
+    }
+
+    private void OnDayToggleChange(bool value)
+    {
+        dayPicker.ShowHidePicker(value);
     }
 }
