@@ -1,6 +1,5 @@
 ﻿using DataBase;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 public static class StorageManager
 {
@@ -16,12 +15,17 @@ public static class StorageManager
 
     public static List<TaskInfo> Load()
     {
-        return MongoDbAtlasManager.GetTasks();
+        return MongoDbAtlasManager.GetTasksByUser();
     }
 
     public static void Update(WeekController week)
     {
         MongoDbAtlasManager.UpdateUser(week);
+    }
+
+    public static void Update(TaskInfo task)
+    {
+        MongoDbAtlasManager.UpdateTask(task);
     }
 
     public static void Remove()

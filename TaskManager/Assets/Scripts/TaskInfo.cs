@@ -20,4 +20,6 @@ public class TaskInfo
     public string _weekName;
 
     public DayOfWeek _dayOfWeek;
+
+    public DateTime _date;
 }

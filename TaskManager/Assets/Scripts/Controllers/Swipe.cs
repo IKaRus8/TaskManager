@@ -56,7 +56,7 @@ public class Swipe : MonoBehaviour
             }
             else if(Input.GetMouseButton(0))
             {
-                swipeDelta = new Vector2(Input.GetAxis("Mouse X") / Time.deltaTime, Input.GetAxis("Mouse Y") / Time.deltaTime);
+                swipeDelta = new Vector2(Input.GetAxis(StaticTextStorage.MouseX) / Time.deltaTime, Input.GetAxis(StaticTextStorage.MouseY) / Time.deltaTime);
             }
 
             dragTime += Time.deltaTime;

@@ -1,9 +1,6 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace DataBase
 {
@@ -56,7 +53,7 @@ namespace DataBase
             return CurrentUser;
         }
 
-        public static List<TaskInfo> GetTasks()
+        public static List<TaskInfo> GetTasksByUser()
         {
             var tasks = _taskCollection.Find(t => t._userId == CurrentUser._id)?.ToList();
 
@@ -67,7 +64,7 @@ namespace DataBase
         {
             task._userId = CurrentUser._id;
 
-            _taskCollection.InsertOne(task);
+            _taskCollection.InsertOneAsync(task);
         }
 
         public static void UpdateUser(WeekController week)
@@ -76,7 +73,16 @@ namespace DataBase
 
             var update = Builders<User>.Update.AddToSet(u => u.weeks, week);
 
-            var result = _userCollection.UpdateOne(filter, update);
+            var result = _userCollection.UpdateOneAsync(filter, update);
+        }
+
+        public static void UpdateTask(TaskInfo task)
+        {
+            var filter = Builders<TaskInfo>.Filter.Eq(t => t._id, task._id);
+
+            //var update = Builders<TaskInfo>.Update.Set(t => t.deleted, task.deleted);
+
+            var result = _taskCollection.ReplaceOneAsync(filter, task);
         }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using UnityEngine;
@@ -106,7 +104,7 @@ public class CalendarController : BasePanel
 
     private void OnDaySelect(int day)
     {
-        SelectedDate = new DateTime(SelectedDate.Year, SelectedDate.Month, day);
+        SelectedDate = new DateTime(SelectedDate.Year, SelectedDate.Month, day).AddHours(3);
 
         Callback?.Invoke(SelectedDate);
     }

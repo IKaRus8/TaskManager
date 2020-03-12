@@ -29,6 +29,7 @@ public class TaskCreatePanel : BasePanel, ITempPanel
     private WeekController Week { get; set; }
     private DayOfWeek Day { get; set; }
     private List<DayItem> Days { get; set; }
+    private DateTime TaskDate { get; set; }
 
     protected override void Awake()
     {
@@ -75,6 +76,8 @@ public class TaskCreatePanel : BasePanel, ITempPanel
     {
         if(description.text == "")
         {
+            description.placeholder.color = Color.red;
+
             return;
         }
 
@@ -83,10 +86,18 @@ public class TaskCreatePanel : BasePanel, ITempPanel
             isRecurring = taskType.isOn,
             _descriptionText = description.text,
             _weekName = Week.WeekName,
-            _dayOfWeek = Day
+            _dayOfWeek = Day,
+            _date = TaskDate
         };
 
-        Week.AddTask(newTask);
+        if (newTask.isRecurring)
+        {
+            Week.AddTask(newTask); 
+        }
+        else
+        {
+
+        }
 
         _taskManager.CheckTaskToShow(newTask);
 
@@ -132,6 +143,8 @@ public class TaskCreatePanel : BasePanel, ITempPanel
         {
             dateText.text = date.ToString();//"Yy:Mm:Dd");
         }
+
+        TaskDate = date;
 
         calendar.Close();
     }

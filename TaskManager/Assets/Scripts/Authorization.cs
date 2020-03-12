@@ -28,6 +28,23 @@ namespace DataBase
         protected override void Start()
         {
             MongoDbAtlasManager.Conect();
+
+            ForceLogin();
+        }
+
+        private void ForceLogin()
+        {
+            User user = MongoDbAtlasManager.TakeUser("NewUser", "test");
+
+            if (user != null)
+            {
+                _panelManager.SwitchOffPanels();
+                _panelManager.EnableBackground(false);
+
+                _taskManager.OnAuthorization(user.weeks);
+
+                MessageManager.SetFooterInfo($"Привет {user.login}");
+            }
         }
 
         private void OnButtonClick()
@@ -47,12 +64,12 @@ namespace DataBase
                 }
                 else
                 {
-                    message.text = "unvalidate password";
+                    message.text = StaticTextStorage.UnvalidatePassword;
                 }
             }
             else
             {
-                message.text = "unvalidate login";
+                message.text = StaticTextStorage.UnvalidateLogin;
             }
         }
 
@@ -67,11 +84,11 @@ namespace DataBase
 
                 _taskManager.OnAuthorization(user.weeks);
 
-                MessageManager.SetFooterInfo($"Привет {user.login}");
+                MessageManager.SetFooterInfo(StaticTextStorage.Hello + " " + user.login);
             }
             else
             {
-                message.text = "User not finded";
+                message.text = StaticTextStorage.User404;
             }
         }
 
@@ -86,11 +103,11 @@ namespace DataBase
 
                 _taskManager.OnAuthorization(user.weeks);
 
-                MessageManager.SetFooterInfo($"Привет {user.login}");
+                MessageManager.SetFooterInfo(StaticTextStorage.Hello + " " + user.login);
             }
             else
             {
-                message.text = "User already created";
+                message.text = StaticTextStorage.UserAlreadyCreated;
             }
         }
     }
