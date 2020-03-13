@@ -185,7 +185,7 @@ public class TaskManager : MonoBehaviour
 
         foreach (var task in day.tasks)
         {
-            var taskItem = _panelManager.CreatePanel<TaskItem>(_panelManager.taskConatainer.transform);
+            var taskItem = _panelManager.CreatePanel<BaseTask>(_panelManager.taskConatainer.transform);
 
             taskItem.Construct(task);
         }
@@ -197,7 +197,7 @@ public class TaskManager : MonoBehaviour
         {
             if (task._weekName == GetCurrentWeek().WeekName && task._dayOfWeek == DateTime.Now.DayOfWeek)
             {
-                var taskItem = _panelManager.CreatePanel<TaskItem>(_panelManager.taskConatainer.transform);
+                var taskItem = _panelManager.CreatePanel<BaseTask>(_panelManager.taskConatainer.transform);
 
                 taskItem.Construct(task);
             } 
@@ -206,7 +206,7 @@ public class TaskManager : MonoBehaviour
         {
             if(task._date.ToShortDateString() == DateTime.Now.ToShortDateString())
             {
-                var taskItem = _panelManager.CreatePanel<TaskItem>(_panelManager.taskConatainer.transform);
+                var taskItem = _panelManager.CreatePanel<BaseTask>(_panelManager.taskConatainer.transform);
 
                 taskItem.Construct(task);
             }

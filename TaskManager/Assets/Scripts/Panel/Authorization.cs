@@ -16,11 +16,12 @@ namespace DataBase
         private TaskManager _taskManager => TaskManager.Instance;
 
         private Regex regex;
-        private string regexPattern = "^[a-zA-Z0-9]{3,10}$";
+        private readonly string regexPattern = "^[a-zA-Z0-9]{3,10}$";
 
         protected override void Awake()
         {
             authorizeButton.onClick.AddListener(OnButtonClick);
+            registrationToggle.onValueChanged.AddListener(OnRegestrationToggleChange);
 
             regex = new Regex(regexPattern);
         }
@@ -34,16 +35,12 @@ namespace DataBase
 
         private void ForceLogin()
         {
-            User user = MongoDbAtlasManager.TakeUser("NewUser", "test");
+            var login = PlayerPrefs.GetString(StaticTextStorage.Login);
+            var password = PlayerPrefs.GetString(StaticTextStorage.Password);
 
-            if (user != null)
+            if(!string.IsNullOrEmpty(login) && !string.IsNullOrEmpty(password))
             {
-                _panelManager.SwitchOffPanels();
-                _panelManager.EnableBackground(false);
-
-                _taskManager.OnAuthorization(user.weeks);
-
-                MessageManager.SetFooterInfo($"Привет {user.login}");
+                SignIn(login, password);
             }
         }
 
@@ -53,13 +50,21 @@ namespace DataBase
             {
                 if (password.text != "" && regex.IsMatch(password.text))
                 {
+                    bool isLogin;
+
                     if (registrationToggle.isOn)
                     {
-                        SignUp();
+                        isLogin = SignUp();
                     }
                     else
                     {
-                        SignIn();
+                        isLogin = SignIn(login.text, password.text);
+                    }
+
+                    if (isLogin)
+                    {
+                        PlayerPrefs.SetString(StaticTextStorage.Login, login.text);
+                        PlayerPrefs.SetString(StaticTextStorage.Password, password.text);
                     }
                 }
                 else
@@ -73,41 +78,66 @@ namespace DataBase
             }
         }
 
-        private void SignIn()
+        private bool SignIn(string login, string password)
         {
-            User user = MongoDbAtlasManager.TakeUser(login.text, password.text);
+            User user = MongoDbAtlasManager.TakeUser(login, password);
 
             if (user != null)
             {
-                _panelManager.SwitchOffPanels();
-                _panelManager.EnableBackground(false);
+                Login(user);
 
-                _taskManager.OnAuthorization(user.weeks);
-
-                MessageManager.SetFooterInfo(StaticTextStorage.Hello + " " + user.login);
+                return true;
             }
             else
             {
                 message.text = StaticTextStorage.User404;
+
+                return false;
             }
         }
 
-        private void SignUp()
+        private bool SignUp()
         {
             User user = MongoDbAtlasManager.NewUser(login.text, password.text);
 
             if (user != null)
             {
-                _panelManager.SwitchOffPanels();
-                _panelManager.EnableBackground(false);
+                Login(user);
 
-                _taskManager.OnAuthorization(user.weeks);
-
-                MessageManager.SetFooterInfo(StaticTextStorage.Hello + " " + user.login);
+                return true;
             }
             else
             {
                 message.text = StaticTextStorage.UserAlreadyCreated;
+
+                return false;
+            }
+        }
+
+        private void Login(User user)
+        {
+            _panelManager.SwitchOffPanels();
+            _panelManager.EnableBackground(false);
+
+            _taskManager.OnAuthorization(user.weeks);
+
+            MessageManager.SetFooterInfo(StaticTextStorage.Hello + ", " + user.login);
+        }
+
+        private void OnRegestrationToggleChange(bool value)
+        {
+            var text = authorizeButton.GetComponentInChildren<Text>();
+
+            if (text != null)
+            {
+                if (value)
+                {
+                    text.text = StaticTextStorage.SignUp;
+                }
+                else
+                {
+                    text.text = StaticTextStorage.SignIn;
+                }
             }
         }
     }

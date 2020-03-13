@@ -1,15 +1,13 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class BaseTask : MonoBehaviour, ITempPanel
 {
-    public Text name;
+    public Text taskName;
     public Text description;
     public Image background;
+    public Toggle doneToggle;
+    public Color doneColor;
 
     public TaskInfo taskInfo;
 
@@ -35,6 +33,16 @@ public class BaseTask : MonoBehaviour, ITempPanel
         taskInfo._descriptionText = text;
     }
 
+    public void Construct(TaskInfo task)
+    {
+        taskInfo = task;
+        SetText();
+        doneToggle.isOn = taskInfo._isDone;
+        SetTaskView();
+
+        doneToggle.onValueChanged.AddListener(OnToggleValueChanged);
+    }
+
     virtual public void Change(string text)
     {
 
@@ -46,9 +54,25 @@ public class BaseTask : MonoBehaviour, ITempPanel
         Close();
     }
 
-    virtual protected void OnToggleValueChanged(bool value) 
+    virtual protected void OnToggleValueChanged(bool value)
     {
         taskInfo._isDone = value;
+
+        SetTaskView();
+
+        StorageManager.Update(taskInfo);
+    }
+
+    private void SetTaskView()
+    {
+        if (taskInfo._isDone)
+        {
+            background.color = doneColor;
+        }
+        else
+        {
+            background.color = defColor;
+        }
     }
 
     public void SetText()

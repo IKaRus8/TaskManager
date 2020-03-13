@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class CalendarController : BasePanel
+public class CalendarPanel : BasePanel
 {
     public DatePicker yearPicker;
     public DatePicker monthPicker;

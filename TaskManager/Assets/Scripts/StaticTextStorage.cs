@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿
 public static class StaticTextStorage
 {
     public static readonly string MouseX = "Mouse X";
@@ -14,13 +11,21 @@ public static class StaticTextStorage
                            
     public static readonly string Today = "Сегодня";
                            
-    public static readonly string UnvalidatePassword = "Unvalidate password";
+    public static readonly string UnvalidatePassword = "Недопустимый пароль";
                            
-    public static readonly string UnvalidateLogin = "Unvalidate login";
+    public static readonly string UnvalidateLogin = "Недопустимое имя пользователя";
                            
     public static readonly string Hello = "Привет";
                            
-    public static readonly string User404 = "User not finded";
+    public static readonly string User404 = "Пользователь не найден";
                            
-    public static readonly string UserAlreadyCreated = "User already created";
+    public static readonly string UserAlreadyCreated = "Такой пользователь уже существует";
+
+    public static readonly string Login = "Login";
+
+    public static readonly string Password = "Password";
+
+    public static readonly string SignIn = "Войти";
+
+    public static readonly string SignUp = "Создать";
 }

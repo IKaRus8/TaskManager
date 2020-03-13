@@ -14,7 +14,7 @@ public class TaskCreatePanel : BasePanel, ITempPanel
     public Button createButton;
     public Button closeButton;
 
-    public CalendarController calendar;
+    public CalendarPanel calendar;
 
     [Space]
     public DayItem dayWeekItemGo;

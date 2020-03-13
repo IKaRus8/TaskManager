@@ -41,7 +41,7 @@ public class DayController
 
     public void UpdateTasks()
     {
-        tasks.ForEach(t => t._isDone = false);
+        tasks.Where(t => !t.isRecurring).ToList().ForEach(t => t._isDone = false);
 
         DonePercent();
     }
