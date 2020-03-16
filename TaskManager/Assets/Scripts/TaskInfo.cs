@@ -11,6 +11,8 @@ public class TaskInfo
 
     public bool isRecurring;
 
+    public string _name;
+
     public string _descriptionText;
 
     public bool _isDone;

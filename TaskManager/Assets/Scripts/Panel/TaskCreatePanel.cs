@@ -20,7 +20,8 @@ public class TaskCreatePanel : BasePanel, ITempPanel
     public DayItem dayWeekItemGo;
 
     [Space]
-    public InputField description;
+    public InputField nameInputField;
+    public InputField descriptionInputField;
     public GameObject dayGo;
     public GameObject weekParentGo;
 
@@ -67,6 +68,7 @@ public class TaskCreatePanel : BasePanel, ITempPanel
         });
 
         Week = _taskManager.Weeks?.FirstOrDefault();
+        Day = DayOfWeek.Monday;
 
         Days.ForEach(d => d.button.onClick.AddListener(() => OnDayButtonClick(d)));
     }
@@ -74,9 +76,9 @@ public class TaskCreatePanel : BasePanel, ITempPanel
     //TODO: обработать исключения
     private void Create()
     {
-        if(description.text == "")
+        if(nameInputField.text == "")
         {
-            description.placeholder.color = Color.red;
+            nameInputField.placeholder.color = Color.red;
 
             return;
         }
@@ -84,7 +86,8 @@ public class TaskCreatePanel : BasePanel, ITempPanel
         TaskInfo newTask = new TaskInfo
         {
             isRecurring = taskType.isOn,
-            _descriptionText = description.text,
+            _name = nameInputField.text,
+            _descriptionText = descriptionInputField.text,
             _weekName = Week.WeekName,
             _dayOfWeek = Day,
             _date = TaskDate

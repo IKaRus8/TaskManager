@@ -1950,7 +1950,7 @@ MonoBehaviour:
   - {fileID: 5287919372026506040}
   prefabs:
   - {fileID: 5324584217289242942, guid: 09479e61a45b4e14e8db4f02035d92a8, type: 3}
-  - {fileID: 4148383839844884906, guid: 42190aa80cd5ef744ba097e8ec5f8ec2, type: 3}
+  - {fileID: 4148383839844884906, guid: 2a98ec02076c14f4b920a9de4f2a275e, type: 3}
   - {fileID: 7310045847095386303, guid: 6e8f46f5a9a119945b34a719ef1ed936, type: 3}
 --- !u!4 &1415623392
 Transform:

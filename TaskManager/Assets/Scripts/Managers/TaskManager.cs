@@ -166,7 +166,8 @@ public class TaskManager : MonoBehaviour
 
             UpdateWeeks();
 
-            GetCurrentWeek();
+            //каждый раз проходит дальше
+            week = GetCurrentWeek();
         }
 
         return week;

@@ -28,4 +28,12 @@ public static class StaticTextStorage
     public static readonly string SignIn = "Войти";
 
     public static readonly string SignUp = "Создать";
+
+    public static readonly string Remove = "Удалить";
+
+    public static readonly string Cancel = "Отменить";
+
+    public static readonly string Change = "Изменить";
+
+    public static readonly string Accept = "Принять";
 }
