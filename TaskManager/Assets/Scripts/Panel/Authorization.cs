@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +16,7 @@ namespace DataBase
 
         private PanelManager _panelManager => PanelManager.Instance;
         private TaskManager _taskManager => TaskManager.Instance;
+        private WeekManager _weekManager => WeekManager.Instance;
 
         private Regex regex;
         private readonly string regexPattern = "^[a-zA-Z0-9]{3,10}$";
@@ -119,7 +122,7 @@ namespace DataBase
             _panelManager.SwitchOffPanels();
             _panelManager.EnableBackground(false);
 
-            _taskManager.OnAuthorization(user.weeks);
+            OnAuthorization(user.weeks);
 
             MessageManager.SetFooterInfo(StaticTextStorage.Hello + ", " + user.login);
         }
@@ -138,6 +141,23 @@ namespace DataBase
                 {
                     text.text = StaticTextStorage.SignIn;
                 }
+            }
+        }
+
+        private void OnAuthorization(List<WeekController> weeks)
+        {
+            if (weeks != null && weeks.Any())
+            {
+                _weekManager.Add(weeks);
+
+                _taskManager.LoadTasks();
+
+                _taskManager.ShowTodayTasks();
+            }
+            //после регистрации
+            else if (weeks != null && !weeks.Any())
+            {
+                _weekManager.Add(StaticTextStorage.UserFirstWeek);
             }
         }
     }
