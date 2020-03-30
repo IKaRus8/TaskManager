@@ -38,8 +38,8 @@ namespace DataBase
 
         private void ForceLogin()
         {
-            var login = PlayerPrefs.GetString(StaticTextStorage.Login);
-            var password = PlayerPrefs.GetString(StaticTextStorage.Password);
+            var login = PlayerPrefs.GetString(TextStorage.Login);
+            var password = PlayerPrefs.GetString(TextStorage.Password);
 
             if(!string.IsNullOrEmpty(login) && !string.IsNullOrEmpty(password))
             {
@@ -66,18 +66,18 @@ namespace DataBase
 
                     if (isLogin)
                     {
-                        PlayerPrefs.SetString(StaticTextStorage.Login, login.text);
-                        PlayerPrefs.SetString(StaticTextStorage.Password, password.text);
+                        PlayerPrefs.SetString(TextStorage.Login, login.text);
+                        PlayerPrefs.SetString(TextStorage.Password, password.text);
                     }
                 }
                 else
                 {
-                    message.text = StaticTextStorage.UnvalidatePassword;
+                    message.text = TextStorage.UnvalidatePassword;
                 }
             }
             else
             {
-                message.text = StaticTextStorage.UnvalidateLogin;
+                message.text = TextStorage.UnvalidateLogin;
             }
         }
 
@@ -93,7 +93,7 @@ namespace DataBase
             }
             else
             {
-                message.text = StaticTextStorage.User404;
+                message.text = TextStorage.User404;
 
                 return false;
             }
@@ -111,7 +111,7 @@ namespace DataBase
             }
             else
             {
-                message.text = StaticTextStorage.UserAlreadyCreated;
+                message.text = TextStorage.UserAlreadyCreated;
 
                 return false;
             }
@@ -124,7 +124,7 @@ namespace DataBase
 
             OnAuthorization(user.weeks);
 
-            MessageManager.SetFooterInfo(StaticTextStorage.Hello + ", " + user.login);
+            MessageManager.SetFooterInfo(TextStorage.Hello + ", " + user.login);
         }
 
         private void OnRegestrationToggleChange(bool value)
@@ -135,11 +135,11 @@ namespace DataBase
             {
                 if (value)
                 {
-                    text.text = StaticTextStorage.SignUp;
+                    text.text = TextStorage.SignUp;
                 }
                 else
                 {
-                    text.text = StaticTextStorage.SignIn;
+                    text.text = TextStorage.SignIn;
                 }
             }
         }
@@ -157,7 +157,7 @@ namespace DataBase
             //после регистрации
             else if (weeks != null && !weeks.Any())
             {
-                _weekManager.Add(StaticTextStorage.UserFirstWeek);
+                _weekManager.Add(TextStorage.UserFirstWeek);
             }
         }
     }

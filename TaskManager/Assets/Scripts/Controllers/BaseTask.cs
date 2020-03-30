@@ -102,10 +102,10 @@ public class BaseTask : MonoBehaviour, ITempPanel
     private void ToDefaulState()
     {
         leftBtnAction = OnChangeButtonClick;
-        leftButtonText.text = StaticTextStorage.Change;
+        leftButtonText.text = TextStorage.Change;
 
         rightBtnAction = OnRemoveButtonClick;
-        rightButtonText.text = StaticTextStorage.Remove;
+        rightButtonText.text = TextStorage.Remove;
 
         if (changeMod)
         {
@@ -159,10 +159,10 @@ public class BaseTask : MonoBehaviour, ITempPanel
 
     protected virtual void OnChangeButtonClick()
     {
-        leftButtonText.text = StaticTextStorage.Accept;
+        leftButtonText.text = TextStorage.Accept;
         leftBtnAction = Change;
 
-        rightButtonText.text = StaticTextStorage.Cancel;
+        rightButtonText.text = TextStorage.Cancel;
         rightBtnAction = Cancel;
 
         oldtext = description.text;
@@ -173,10 +173,10 @@ public class BaseTask : MonoBehaviour, ITempPanel
 
     protected virtual void OnRemoveButtonClick()
     {
-        leftButtonText.text = StaticTextStorage.Remove;
+        leftButtonText.text = TextStorage.Remove;
         leftBtnAction = Remove;
 
-        rightButtonText.text = StaticTextStorage.Cancel;
+        rightButtonText.text = TextStorage.Cancel;
         rightBtnAction = Cancel;
 
         background.color = removeColor;

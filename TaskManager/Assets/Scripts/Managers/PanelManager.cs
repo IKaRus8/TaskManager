@@ -78,7 +78,7 @@ public class PanelManager : MonoBehaviour
 
         if (panel != default)
         {
-            panel.input.text = StaticTextStorage.Week + " " + weekCount + 1;
+            panel.input.text = TextStorage.Week + " " + weekCount + 1;
             panel.Action = callback;
 
             SwitchOffPanels();

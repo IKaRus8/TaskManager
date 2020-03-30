@@ -1,5 +1,5 @@
 ﻿
-public static class StaticTextStorage
+public static class TextStorage
 {
     public static readonly string MouseX = "Mouse X";
 
@@ -36,4 +36,10 @@ public static class StaticTextStorage
     public static readonly string Change = "Изменить";
 
     public static readonly string Accept = "Принять";
+
+    public static readonly string NotificationChanel_id = "channel_id";
+
+    public static readonly string NotificationChanel_name = "Default Channel";
+
+    public static readonly string NotificationChanel_Description = "Generic notifications";
 }

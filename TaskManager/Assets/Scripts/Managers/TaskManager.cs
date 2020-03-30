@@ -63,7 +63,7 @@ public class TaskManager : MonoBehaviour
     {
         var day = _weekManager.CurrentWeek.GetDay(DateTime.Now.DayOfWeek);
 
-        MessageManager.SetHeaderCaption($"{StaticTextStorage.Today} {_weekManager.CurrentWeek.WeekName}, {day.DayOfWeek.ToString()}");
+        MessageManager.SetHeaderCaption($"{TextStorage.Today} {_weekManager.CurrentWeek.WeekName}, {day.DayOfWeek.ToString()}");
 
         day.tasks.ForEach(t => 
         {
