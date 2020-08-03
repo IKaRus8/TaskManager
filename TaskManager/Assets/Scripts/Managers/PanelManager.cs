@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PanelManager : MonoBehaviour
 {
@@ -71,8 +72,17 @@ public class PanelManager : MonoBehaviour
         }
     }
 
-    public void FillTask(List<TaskInfo> tasks)
+    public void WeekDialogConstruct(int weekCount, UnityAction<string> callback)
     {
+        var panel = CreatePanel<DialogPanel>(panelBack.transform);
 
+        if (panel != default)
+        {
+            panel.input.text = TextStorage.Week + " " + weekCount + 1;
+            panel.Action = callback;
+
+            SwitchOffPanels();
+            EnableBackground(true);
+        }
     }
 }

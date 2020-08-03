@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +16,7 @@ namespace DataBase
 
         private PanelManager _panelManager => PanelManager.Instance;
         private TaskManager _taskManager => TaskManager.Instance;
+        private WeekManager _weekManager => WeekManager.Instance;
 
         private Regex regex;
         private readonly string regexPattern = "^[a-zA-Z0-9]{3,10}$";
@@ -35,8 +38,8 @@ namespace DataBase
 
         private void ForceLogin()
         {
-            var login = PlayerPrefs.GetString(StaticTextStorage.Login);
-            var password = PlayerPrefs.GetString(StaticTextStorage.Password);
+            var login = PlayerPrefs.GetString(TextStorage.Login);
+            var password = PlayerPrefs.GetString(TextStorage.Password);
 
             if(!string.IsNullOrEmpty(login) && !string.IsNullOrEmpty(password))
             {
@@ -63,18 +66,18 @@ namespace DataBase
 
                     if (isLogin)
                     {
-                        PlayerPrefs.SetString(StaticTextStorage.Login, login.text);
-                        PlayerPrefs.SetString(StaticTextStorage.Password, password.text);
+                        PlayerPrefs.SetString(TextStorage.Login, login.text);
+                        PlayerPrefs.SetString(TextStorage.Password, password.text);
                     }
                 }
                 else
                 {
-                    message.text = StaticTextStorage.UnvalidatePassword;
+                    message.text = TextStorage.UnvalidatePassword;
                 }
             }
             else
             {
-                message.text = StaticTextStorage.UnvalidateLogin;
+                message.text = TextStorage.UnvalidateLogin;
             }
         }
 
@@ -90,7 +93,7 @@ namespace DataBase
             }
             else
             {
-                message.text = StaticTextStorage.User404;
+                message.text = TextStorage.User404;
 
                 return false;
             }
@@ -108,7 +111,7 @@ namespace DataBase
             }
             else
             {
-                message.text = StaticTextStorage.UserAlreadyCreated;
+                message.text = TextStorage.UserAlreadyCreated;
 
                 return false;
             }
@@ -119,9 +122,9 @@ namespace DataBase
             _panelManager.SwitchOffPanels();
             _panelManager.EnableBackground(false);
 
-            _taskManager.OnAuthorization(user.weeks);
+            OnAuthorization(user.weeks);
 
-            MessageManager.SetFooterInfo(StaticTextStorage.Hello + ", " + user.login);
+            MessageManager.SetFooterInfo(TextStorage.Hello + ", " + user.login);
         }
 
         private void OnRegestrationToggleChange(bool value)
@@ -132,12 +135,29 @@ namespace DataBase
             {
                 if (value)
                 {
-                    text.text = StaticTextStorage.SignUp;
+                    text.text = TextStorage.SignUp;
                 }
                 else
                 {
-                    text.text = StaticTextStorage.SignIn;
+                    text.text = TextStorage.SignIn;
                 }
+            }
+        }
+
+        private void OnAuthorization(List<WeekController> weeks)
+        {
+            if (weeks != null && weeks.Any())
+            {
+                _weekManager.Add(weeks);
+
+                _taskManager.LoadTasks();
+
+                _taskManager.ShowTodayTasks();
+            }
+            //после регистрации
+            else if (weeks != null && !weeks.Any())
+            {
+                _weekManager.Add(TextStorage.UserFirstWeek);
             }
         }
     }

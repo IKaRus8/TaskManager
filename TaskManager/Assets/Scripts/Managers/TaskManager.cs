@@ -8,11 +8,10 @@ public class TaskManager : MonoBehaviour
 {
     public static TaskManager Instance;
 
-    public List<WeekController> Weeks { get; set; }
-
-    private TaskCreatePanel taskCreatePanel;
+    public TaskCreatePanel _taskCreatePanel { get; set; }
 
     private PanelManager _panelManager => PanelManager.Instance;
+    private WeekManager _weekManager => WeekManager.Instance;
 
     private void Awake()
     {
@@ -20,80 +19,22 @@ public class TaskManager : MonoBehaviour
         {
             Instance = this;
         }
-
-        Weeks = new List<WeekController>();
-    }
-
-    public void CreateTask()
-    {
-
-    }
-
-    public void AddWeek(WeekController newWeek)
-    {
-        if (newWeek != null)
-        {
-            newWeek.FillDays();
-
-            Weeks.Add(newWeek); 
-        }
-    }
-
-    public void AddWeek(string weekName)
-    {
-        WeekController newWeek = new WeekController(Weeks.Count + 1, weekName);
-
-        if (Weeks.Any())
-        {
-            newWeek.startWeek = GetNextWeekStartDay(Weeks.Last().startWeek);
-        }
-        else
-        {
-            DateTime input = DateTime.Now;
-            int delta = DayOfWeek.Monday - input.DayOfWeek;
-            newWeek.startWeek = input.AddDays(delta);
-        }
-
-        Weeks.Add(newWeek);
-
-        StorageManager.Update(newWeek);
-    }
-
-    public void Save()
-    {
-        StorageManager.Save();
-    }
-
-    public void OnAuthorization(List<WeekController> weeks)
-    {
-        if (weeks != null && weeks.Any())
-        {
-            weeks.OrderBy(w => w?.startWeek)?.ToList().ForEach(w => AddWeek(w));
-
-            LoadTasks();
-
-            ShowTodayTasks(GetCurrentWeek());
-        }
-        else if (weeks != null && !weeks.Any())
-        {
-            AddWeek(StaticTextStorage.UserFirstWeek);
-        }
     }
 
     public void LoadTasks()
     {
         var tasks = StorageManager.Load();
 
-        foreach(var task in tasks.Where(t => !t.deleted))
+        foreach (var task in tasks.Where(t => !t.deleted))
         {
             if (task.isRecurring)
             {
-                var week = Weeks.FirstOrDefault(w => w.WeekName == task._weekName);
+                var week = _weekManager.Weeks.FirstOrDefault(w => w.WeekName == task._weekName);
 
                 if (week != null)
                 {
                     week.AddTask(task);
-                } 
+                }
             }
             else
             {
@@ -102,114 +43,50 @@ public class TaskManager : MonoBehaviour
         }
     }
 
-    public void WeekDialogConstruct()
+    public void Create(WeekController week, TaskInfo newTask)
     {
-        var panel = _panelManager.CreatePanel<DialogPanel>(_panelManager.panelBack.transform);
-
-        if (panel != default)
+        if (newTask.isRecurring)
         {
-            panel.input.text = StaticTextStorage.Week + " " + Weeks.Count + 1;
-            panel.Action = OnWeekCreate;
-
-            _panelManager.SwitchOffPanels();
-            _panelManager.EnableBackground(true);
-        }
-    }
-
-    private void OnWeekCreate(string text)
-    {
-        AddWeek(text);
-
-        //var calendar = _panelManager.GetPanel<CalendarController>();
-        //_panelManager.EnableBackground(true);
-        //calendar.Show();
-
-        //get monday ---------------------------------------------------------------------------------------------
-        //System.Globalization.CultureInfo ci = System.Threading.Thread.CurrentThread.CurrentCulture;
-        //DayOfWeek fdow = ci.DateTimeFormat.FirstDayOfWeek;
-        //DayOfWeek today = DateTime.Now.DayOfWeek;
-        //DateTime sow = DateTime.Now.AddDays(-(today - fdow)).Date;
-    }
-
-    public void ShowTaskCreatePanel()
-    {
-        _panelManager.SwitchOffPanels();
-        _panelManager.EnableBackground(true);
-
-        taskCreatePanel = _panelManager.CreatePanel<TaskCreatePanel>(_panelManager.panelBack.transform);
-        taskCreatePanel.Show();
-    }
-
-    public static DateTime GetNextWeekStartDay(DateTime start, DayOfWeek day = DayOfWeek.Monday)
-    {
-        start = start.AddDays(1);
-
-        // The (... + 7) % 7 ensures we end up with a value in the range [0, 6]
-        int daysToAdd = ((int)day - (int)start.DayOfWeek + 7) % 7;
-        return start.AddDays(daysToAdd);
-    }
-
-    public WeekController GetCurrentWeek()
-    {
-        var week = Weeks.FirstOrDefault(w => w.weekNumber == Weeks.Where(w1 => w1.startWeek <= DateTime.Now).Max(w2 => w2.weekNumber));
-
-        if(week != null && week.startWeek.AddDays(7) < DateTime.Now)
-        {
-            Weeks = Weeks.OrderBy(w => w.weekNumber).ToList();
-
-            Weeks.FirstOrDefault().startWeek = GetNextWeekStartDay(week.startWeek);
-
-            for (int i = 1; i < Weeks.Count; i++)
-            {
-                Weeks[i].startWeek = GetNextWeekStartDay(Weeks[i - 1].startWeek);
-            }
-
-            UpdateWeeks();
-
-            //каждый раз проходит дальше
-            week = GetCurrentWeek();
+            week.AddTask(newTask);
         }
 
-        return week;
+        Save(newTask);
+        CheckTaskToShow(newTask);
     }
 
-    private void UpdateWeeks()
+    public void Save(TaskInfo newTask)
     {
-        Weeks.ForEach(w => w.UpdateWeek());
+        StorageManager.Save(newTask);
     }
 
-    public void ShowTodayTasks(WeekController week)
+    public void ShowTodayTasks()
     {
-        var day = week.GetDay(DateTime.Now.DayOfWeek);
+        var day = _weekManager.CurrentWeek.GetDay(DateTime.Now.DayOfWeek);
 
-        MessageManager.SetHeaderCaption($"{StaticTextStorage.Today} {week.WeekName}, {day.DayOfWeek.ToString()}");
+        MessageManager.SetHeaderCaption($"{TextStorage.Today} {_weekManager.CurrentWeek.WeekName}, {day.DayOfWeek.ToString()}");
 
-        foreach (var task in day.tasks)
+        day.tasks.ForEach(t => 
         {
             var taskItem = _panelManager.CreatePanel<BaseTask>(_panelManager.taskConatainer.transform);
 
-            taskItem.Construct(task);
-        }
+            taskItem.Construct(t);
+        });
     }
 
     public void CheckTaskToShow(TaskInfo task)
     {
         if (task.isRecurring)
         {
-            if (task._weekName == GetCurrentWeek().WeekName && task._dayOfWeek == DateTime.Now.DayOfWeek)
+            if (task._weekName == _weekManager.CurrentWeek.WeekName && task._dayOfWeek == DateTime.Now.DayOfWeek)
             {
-                var taskItem = _panelManager.CreatePanel<BaseTask>(_panelManager.taskConatainer.transform);
-
-                taskItem.Construct(task);
+                CreateTaskItem(task);
             } 
         }
         else
         {
             if(task._date.ToShortDateString() == DateTime.Now.ToShortDateString())
             {
-                var taskItem = _panelManager.CreatePanel<BaseTask>(_panelManager.taskConatainer.transform);
-
-                taskItem.Construct(task);
+                CreateTaskItem(task);
             }
             else if (task._date < DateTime.Now)
             {
@@ -218,5 +95,14 @@ public class TaskManager : MonoBehaviour
                 StorageManager.Update(task);
             }
         }
+    }
+
+    private void CreateTaskItem(TaskInfo task)
+    {
+        MessageManager.ShowHideTutorial(true);
+
+        var taskItem = _panelManager.CreatePanel<BaseTask>(_panelManager.taskConatainer.transform);
+
+        taskItem.Construct(task);
     }
 }
