@@ -23,24 +23,24 @@ public class TaskManager : MonoBehaviour
 
     public void LoadTasks()
     {
-        var tasks = StorageManager.Load();
+        List<TaskInfo> tasks = StorageManager.LoadTasksForUser();
 
-        foreach (var task in tasks.Where(t => !t.deleted))
+        tasks.ForEach(t => 
         {
-            if (task.isRecurring)
+            if (t.isRecurring)
             {
-                var week = _weekManager.Weeks.FirstOrDefault(w => w.WeekName == task._weekName);
+                WeekController week = _weekManager.Weeks.FirstOrDefault(w => w.WeekName == t._weekName);
 
                 if (week != null)
                 {
-                    week.AddTask(task);
+                    week.AddTask(t);
                 }
             }
             else
             {
-                CheckTaskToShow(task);
+                CheckTaskToShow(t);
             }
-        }
+        });
     }
 
     public void Create(WeekController week, TaskInfo newTask)
@@ -61,13 +61,13 @@ public class TaskManager : MonoBehaviour
 
     public void ShowTodayTasks()
     {
-        var day = _weekManager.CurrentWeek.GetDay(DateTime.Now.DayOfWeek);
+        DayController day = _weekManager.CurrentWeek.GetDay(DateTime.Now.DayOfWeek);
 
         MessageManager.SetHeaderCaption($"{TextStorage.Today} {_weekManager.CurrentWeek.WeekName}, {day.DayOfWeek.ToString()}");
 
         day.tasks.ForEach(t => 
         {
-            var taskItem = _panelManager.CreatePanel<BaseTask>(_panelManager.taskConatainer.transform);
+            BaseTask taskItem = _panelManager.CreatePanel<BaseTask>(_panelManager.taskConatainer.transform);
 
             taskItem.Construct(t);
         });

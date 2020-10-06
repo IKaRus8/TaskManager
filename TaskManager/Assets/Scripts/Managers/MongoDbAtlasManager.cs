@@ -11,7 +11,7 @@ namespace DataBase
         private static IMongoCollection<User> _userCollection;
         private static IMongoCollection<TaskInfo> _taskCollection;
 
-        private static User CurrentUser;
+        //private static User CurrentUser;
         
         public static void Conect()
         {
@@ -25,9 +25,9 @@ namespace DataBase
         {
             User response = _userCollection.Find(u => u.login == login && u.password == password).FirstOrDefault();
 
-            CurrentUser = response;
+            UserInfo.User = response;
 
-            return CurrentUser;
+            return response;
         }
 
         public static User NewUser(string login, string password)
@@ -36,9 +36,9 @@ namespace DataBase
 
             if(checkUser != null)
             {
-                CurrentUser = checkUser;
+                UserInfo.User = checkUser;
 
-                return CurrentUser;
+                return checkUser;
             }
 
             checkUser = new User() { login = login, password = password, weeks = new List<WeekController>() };
@@ -48,28 +48,35 @@ namespace DataBase
             //TODO: обработать ошибки
             checkUser = _userCollection.Find(u => u.login == login).FirstOrDefault();
 
-            CurrentUser = checkUser;
+            UserInfo.User = checkUser;
 
-            return CurrentUser;
+            return checkUser;
         }
 
         public static List<TaskInfo> GetTasksByUser()
         {
-            var tasks = _taskCollection.Find(t => t._userId == CurrentUser._id)?.ToList();
+            List<TaskInfo> tasks = _taskCollection.Find(t => t._userId == UserInfo.User._id && !t.deleted)?.ToList();
+
+            return tasks;
+        }
+
+        public static List<TaskInfo> GetTasksByWeek(string weekName)
+        {
+            List<TaskInfo> tasks = _taskCollection.Find(t => t._userId == UserInfo.User._id && t._weekName == weekName && !t.deleted)?.ToList();
 
             return tasks;
         }
 
         public static void AddTask(TaskInfo task)
         {
-            task._userId = CurrentUser._id;
+            task._userId = UserInfo.User._id;
 
             _taskCollection.InsertOneAsync(task);
         }
 
-        public static void UpdateUser(WeekController week)
+        public static void AddWeek(WeekController week)
         {
-            var filter = Builders<User>.Filter.Eq(u => u._id, CurrentUser._id);
+            var filter = Builders<User>.Filter.Eq(u => u._id, UserInfo.User._id);
 
             var update = Builders<User>.Update.AddToSet(u => u.weeks, week);
 
@@ -83,6 +90,15 @@ namespace DataBase
             //var update = Builders<TaskInfo>.Update.Set(t => t.deleted, task.deleted);
 
             var result = _taskCollection.ReplaceOneAsync(filter, task);
+        }
+
+        public static void RemoveWeek(WeekController week)
+        {
+            var filter = Builders<User>.Filter.Eq(u => u._id, UserInfo.User._id);
+
+            var update = Builders<User>.Update.PullFilter(u => u.weeks, w => w.WeekName == week.WeekName);
+
+            var result = _userCollection.FindOneAndUpdateAsync(u => u._id == UserInfo.User._id, update);
         }
     }
 }

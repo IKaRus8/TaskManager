@@ -10,7 +10,7 @@ public class WeekManager : MonoBehaviour
 
     private PanelManager _panelManager => PanelManager.Instance;
 
-    public List<WeekController> Weeks { get; set; }
+    public List<WeekController> Weeks { get; private set; }
     public WeekController CurrentWeek { get; private set; }
 
     private void Awake()
@@ -58,6 +58,16 @@ public class WeekManager : MonoBehaviour
         Weeks.Add(newWeek);
 
         StorageManager.Update(newWeek);
+    }
+
+    public void Remove(string weekName)
+    {
+        WeekController week = Weeks.FirstOrDefault(w => w.WeekName == weekName);
+
+        if (week != null)
+        {
+            Weeks.Remove(week); 
+        }
     }
 
     public void WeekDialogConstruct()

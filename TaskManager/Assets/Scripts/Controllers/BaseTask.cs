@@ -30,9 +30,17 @@ public class BaseTask : MonoBehaviour, ITempPanel
     private Color changeColor = Color.yellow;
     private string oldtext;
     private bool changeMod;
+    private bool awaked;
 
     virtual public void Awake()
     {
+        if (awaked)
+        {
+            return;
+        }
+
+        awaked = true;
+
         defColor = background.color;
 
         inputField.onValueChanged.AddListener(OnTaskDescriptionChange);
@@ -64,6 +72,11 @@ public class BaseTask : MonoBehaviour, ITempPanel
 
     public void Construct(TaskInfo task)
     {
+        if (!awaked)
+        {
+            Awake();
+        }
+
         taskInfo = task;
         SetText();
         doneToggle.isOn = taskInfo._isDone;

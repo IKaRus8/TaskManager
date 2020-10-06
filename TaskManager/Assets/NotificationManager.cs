@@ -30,12 +30,8 @@ public class NotificationManager : MonoBehaviour
             };
             AndroidNotificationCenter.RegisterNotificationChannel(chanel); 
         }
-        else
-        {
-            AndroidNotificationCenter.CancelAllNotifications();
-        }
 
-        ShowNotification("test", "nextDay", DateTime.Now.AddDays(1));
+        ShowNotification("test", "fiveSec", DateTime.Now.Add(new TimeSpan(0,0,5)));
     }
 
     public void ShowNotification(string title, string text, DateTime dateTime)

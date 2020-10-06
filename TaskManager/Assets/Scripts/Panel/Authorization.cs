@@ -12,6 +12,7 @@ namespace DataBase
         public InputField password;
         public Text message;
         public Button authorizeButton;
+        public Button retryConect;
         public Toggle registrationToggle;
 
         private PanelManager _panelManager => PanelManager.Instance;
@@ -21,22 +22,45 @@ namespace DataBase
         private Regex regex;
         private readonly string regexPattern = "^[a-zA-Z0-9]{3,10}$";
 
+        private string noConect = "Не удалось установить подключение";
+
         protected override void Awake()
         {
             authorizeButton.onClick.AddListener(OnButtonClick);
             registrationToggle.onValueChanged.AddListener(OnRegestrationToggleChange);
+
+            retryConect.onClick.AddListener(() => TryConect());
 
             regex = new Regex(regexPattern);
         }
 
         protected override void Start()
         {
-            MongoDbAtlasManager.Conect();
-
-            ForceLogin();
+            if (TryConect())
+            {
+                AutoLogin(); 
+            }
         }
 
-        private void ForceLogin()
+        private bool TryConect()
+        {
+            try
+            {
+                MongoDbAtlasManager.Conect();
+
+                return true;
+            }
+            catch
+            {
+                message.text = noConect;
+
+                retryConect.gameObject.SetActive(true);
+
+                return false;
+            }
+        }
+
+        private void AutoLogin()
         {
             var login = PlayerPrefs.GetString(TextStorage.Login);
             var password = PlayerPrefs.GetString(TextStorage.Password);

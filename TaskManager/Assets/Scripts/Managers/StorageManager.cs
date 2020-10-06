@@ -13,14 +13,19 @@ public static class StorageManager
         MongoDbAtlasManager.AddTask(task);
     }
 
-    public static List<TaskInfo> Load()
+    public static List<TaskInfo> LoadTasksForUser()
     {
         return MongoDbAtlasManager.GetTasksByUser();
     }
 
+    public static List<TaskInfo> LoadTaskByWeek(string weekName)
+    {
+        return MongoDbAtlasManager.GetTasksByWeek(weekName);
+    }
+
     public static void Update(WeekController week)
     {
-        MongoDbAtlasManager.UpdateUser(week);
+        MongoDbAtlasManager.AddWeek(week);
     }
 
     public static void Update(TaskInfo task)
@@ -28,8 +33,23 @@ public static class StorageManager
         MongoDbAtlasManager.UpdateTask(task);
     }
 
-    public static void Remove()
+    public static void Remove(WeekController week)
     {
+        List<TaskInfo> tasks = LoadTaskByWeek(week.WeekName);
 
+        tasks.ForEach(t =>
+        {
+            t.deleted = true;
+            Update(t);
+        });
+
+        MongoDbAtlasManager.RemoveWeek(week);
+    }
+
+    public static void Remove(TaskInfo task)
+    {
+        task.deleted = true;
+
+        Update(task);
     }
 }

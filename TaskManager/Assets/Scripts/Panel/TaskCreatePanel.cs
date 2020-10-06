@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class TaskCreatePanel : BasePanel, ITempPanel
 {
     public Toggle taskType;
-    public Toggle inAllWeek;
+    public Toggle inAllWeekToggle;
     public Button weekChangeButton;
     public Button dayChangeButton;
     public Button CalendarButton;
@@ -43,7 +43,7 @@ public class TaskCreatePanel : BasePanel, ITempPanel
         closeButton.onClick.AddListener(Close);
 
         taskType.onValueChanged.AddListener(OnTypeToggleChanged);
-        inAllWeek.onValueChanged.AddListener(OnAllWeekToggleChanged);
+        inAllWeekToggle.onValueChanged.AddListener(OnAllWeekToggleChanged);
         CalendarButton.onClick.AddListener(OnCalendarButtonClick);
         calendar.Callback = OnDaySelected;
 
@@ -87,7 +87,7 @@ public class TaskCreatePanel : BasePanel, ITempPanel
             return;
         }
 
-        if (inAllWeek)
+        if (inAllWeekToggle.isOn)
         {
             _weekManager.Weeks.ForEach(w => Create(w));
         }
