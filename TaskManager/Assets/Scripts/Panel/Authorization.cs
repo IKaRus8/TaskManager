@@ -8,12 +8,18 @@ namespace DataBase
 {
     public class Authorization : BasePanel
     {
-        public InputField login;
-        public InputField password;
-        public Text message;
-        public Button authorizeButton;
-        public Button retryConect;
-        public Toggle registrationToggle;
+        [SerializeField]
+        private InputField login;
+        [SerializeField]
+        private InputField password;
+        [SerializeField]
+        private Text message;
+        [SerializeField]
+        private Button authorizeButton;
+        [SerializeField]
+        private Button retryConect;
+        [SerializeField]
+        private Toggle registrationToggle;
 
         private PanelManager _panelManager => PanelManager.Instance;
         private TaskManager _taskManager => TaskManager.Instance;
