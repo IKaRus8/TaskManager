@@ -292,7 +292,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e140c2006bdc4c4e9f30f7c013528b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  taskContainer: {fileID: 3979186600260584360}
+  taskContainer: {fileID: 3738447553604280713}
   background: {fileID: 9082751051158596177}
   capture: {fileID: 3975745162178963260}
   activeColor: {r: 0.81509435, g: 1, b: 0.87873864, a: 1}
@@ -356,6 +356,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 0
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}

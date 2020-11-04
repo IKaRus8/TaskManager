@@ -3,25 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Zenject;
 
-public class WeekManager : MonoBehaviour
+public class WeekManager
 {
-    public static WeekManager Instance;
+    [Inject]
+    private PanelManager _panelManager;
 
-    private PanelManager _panelManager => PanelManager.Instance;
-
-    public List<WeekController> Weeks { get; private set; }
+    public List<WeekController> Weeks { get; private set; } = new List<WeekController>();
     public WeekController CurrentWeek { get; private set; }
-
-    private void Awake()
-    {
-        if(Instance == null)
-        {
-            Instance = this;
-        }
-
-        Weeks = new List<WeekController>();
-    }
 
     public void Add(List<WeekController> weeks)
     {

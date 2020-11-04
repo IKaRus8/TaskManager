@@ -1,33 +1,27 @@
-﻿using DataBase;
+﻿using Assets.Scripts;
+using DataBase;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using Zenject;
 
 public class PanelManager : MonoBehaviour
 {
-    public static PanelManager Instance;
+    public RectTransform panelBack;
 
-    public GameObject panelBack;
-
-    public GameObject taskConatainer;
+    public RectTransform taskConatainer;
 
     //TODO: создавать из префабов
     public List<BasePanel> panels;
-    public List<GameObject> prefabs;
 
-    private void Awake()
-    {
-        if(Instance == null)
-        {
-            Instance = this;
-        }
-    }
+    [Inject]
+    private DiContainer diContainer;
 
     public void EnableBackground(bool value)
     {
-        panelBack.SetActive(value);
+        panelBack.gameObject.SetActive(value);
     }
 
     public void SwitchOffPanels()
@@ -56,25 +50,16 @@ public class PanelManager : MonoBehaviour
         }
     }
 
-    public T CreatePanel<T>(Transform parent) where T : ITempPanel
+    public T CreatePanel<T>(RectTransform parent) where T : ITempElement
     {
-        var prefab = prefabs.FirstOrDefault(p => p.GetComponent<T>() != null);
+        var factory = diContainer.Resolve<PanelFactory<T>>();
 
-        if (prefab != null)
-        {
-            var panel = Instantiate(prefab, parent);
-
-            return panel.GetComponent<T>();
-        }
-        else
-        {
-            return default;
-        }
+        return factory.Create(parent);
     }
 
     public void WeekDialogConstruct(int weekCount, UnityAction<string> callback)
     {
-        var panel = CreatePanel<DialogPanel>(panelBack.transform);
+        var panel = CreatePanel<DialogPanel>(panelBack);
 
         if (panel != default)
         {

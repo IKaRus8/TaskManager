@@ -1,16 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using Assets.Scripts.Panel;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Zenject;
 
-public class DialogPanel : BasePanel, ITempPanel
+public class DialogPanel : BaseTempElement
 {
     public InputField input;
     public Button okButton;
     public Button cancelButton;
 
     public UnityAction<string> Action { get; set; }
+
+    [Inject]
+    PanelManager panelManager;
 
     protected override void Awake()
     {
@@ -37,8 +39,8 @@ public class DialogPanel : BasePanel, ITempPanel
 
     public override void Close()
     {
-        PanelManager.Instance.EnableBackground(false);
+        panelManager.EnableBackground(false);
 
-        Destroy(gameObject);
+        base.Close();
     }
 }

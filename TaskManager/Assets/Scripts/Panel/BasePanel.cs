@@ -1,10 +1,14 @@
-﻿using UnityEngine;
+﻿using System.Runtime.Remoting.Messaging;
+using UnityEngine;
+using Zenject;
 
 public class BasePanel : MonoBehaviour
 {
+    private RectTransform rectTransform;
+
     protected virtual void Awake()
     {
-        
+        rectTransform = GetComponent<RectTransform>();
     }
 
     protected virtual void Start()

@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Assets.Scripts.Panel;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
-public class TaskCreatePanel : BasePanel, ITempPanel
+public class TaskCreatePanel : BaseTempElement
 {
     public Toggle taskType;
     public Toggle inAllWeekToggle;
@@ -26,14 +28,22 @@ public class TaskCreatePanel : BasePanel, ITempPanel
     public GameObject dayGo;
     public GameObject weekParentGo;
 
-    private TaskManager _taskManager => TaskManager.Instance;
-    private PanelManager _panelManager => PanelManager.Instance;
-    private WeekManager _weekManager => WeekManager.Instance;
+    private PanelManager _panelManager;
+    private TaskManager _taskManager;
+    private WeekManager _weekManager;
 
     private WeekController Week { get; set; }
     private DayOfWeek Day { get; set; }
     private List<DayItem> Days { get; set; }
     private DateTime TaskDate { get; set; }
+
+    [Inject]
+    private void Construct(PanelManager panelManager, TaskManager taskManager, WeekManager weekManager)
+    {
+        _panelManager = panelManager;
+        _taskManager = taskManager;
+        _weekManager = weekManager;
+    }
 
     protected override void Awake()
     {
@@ -48,19 +58,14 @@ public class TaskCreatePanel : BasePanel, ITempPanel
         calendar.Callback = OnDaySelected;
 
         Days = dayGo.GetComponentsInChildren<DayItem>().ToList();
-    }
-
-    protected override void Start()
-    {
-        base.Start();
 
         weekParentGo.SetActive(false);
         dayGo.SetActive(false);
 
-        Construct();
+        Init();
     }
 
-    public void Construct()
+    public void Init()
     {
         _weekManager.Weeks.ForEach(w => 
         {
@@ -89,17 +94,17 @@ public class TaskCreatePanel : BasePanel, ITempPanel
 
         if (inAllWeekToggle.isOn)
         {
-            _weekManager.Weeks.ForEach(w => Create(w));
+            _weekManager.Weeks.ForEach(w => CreateTask(w));
         }
         else
         {
-            Create(Week);
+            CreateTask(Week);
         }
 
         Close();
     }
 
-    private void Create(WeekController week)
+    private void CreateTask(WeekController week)
     {
         TaskInfo newTask = new TaskInfo
         {
@@ -167,6 +172,6 @@ public class TaskCreatePanel : BasePanel, ITempPanel
     {
         _panelManager.EnableBackground(false);
 
-        Destroy(gameObject);
+        base.Close();
     }
 }

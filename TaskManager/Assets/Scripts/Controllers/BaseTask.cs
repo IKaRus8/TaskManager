@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.Panel;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class BaseTask : MonoBehaviour, ITempPanel
+public class BaseTask : BaseTempElement
 {
     public Text taskName;
     public Image background;
@@ -32,7 +33,7 @@ public class BaseTask : MonoBehaviour, ITempPanel
     private bool changeMod;
     private bool awaked;
 
-    virtual public void Awake()
+    protected override void Awake()
     {
         if (awaked)
         {
@@ -55,22 +56,7 @@ public class BaseTask : MonoBehaviour, ITempPanel
         ToDefaulState();
     }
 
-    virtual public void Start()
-    {
-        
-    }
-
-    virtual public void Update()
-    {
-        
-    }
-
-    virtual public void Construct(string text)
-    {
-        taskInfo._descriptionText = text;
-    }
-
-    public void Construct(TaskInfo task)
+    public void Init(TaskInfo task)
     {
         if (!awaked)
         {
@@ -130,11 +116,6 @@ public class BaseTask : MonoBehaviour, ITempPanel
         {
             inputField.gameObject.SetActive(false);
         }
-    }
-
-    public void Close()
-    {
-        Destroy(gameObject);
     }
 
     protected virtual void Change()

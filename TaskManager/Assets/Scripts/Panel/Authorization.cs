@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace DataBase
 {
@@ -21,9 +22,17 @@ namespace DataBase
         [SerializeField]
         private Toggle registrationToggle;
 
-        private PanelManager _panelManager => PanelManager.Instance;
-        private TaskManager _taskManager => TaskManager.Instance;
-        private WeekManager _weekManager => WeekManager.Instance;
+        private PanelManager _panelManager;
+        private TaskManager _taskManager;
+        private WeekManager _weekManager;
+
+        [Inject]
+        private void Construct(PanelManager panelManager, TaskManager taskManager, WeekManager weekManager)
+        {
+            _panelManager = panelManager;
+            _taskManager = taskManager;
+            _weekManager = weekManager;
+        }
 
         private Regex regex;
         private readonly string regexPattern = "^[a-zA-Z0-9]{3,10}$";

@@ -1,24 +1,20 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
+using Zenject;
 
-public class TaskManager : MonoBehaviour
+public class TaskManager
 {
-    public static TaskManager Instance;
-
     public TaskCreatePanel _taskCreatePanel { get; set; }
 
-    private PanelManager _panelManager => PanelManager.Instance;
-    private WeekManager _weekManager => WeekManager.Instance;
+    private PanelManager _panelManager;
+    private WeekManager _weekManager;
 
-    private void Awake()
+    [Inject]
+    private void Construct(PanelManager panelManager, WeekManager weekManager)
     {
-        if(Instance == null)
-        {
-            Instance = this;
-        }
+        _panelManager = panelManager;
+        _weekManager = weekManager;
     }
 
     public void LoadTasks()
@@ -67,9 +63,9 @@ public class TaskManager : MonoBehaviour
 
         day.tasks.ForEach(t => 
         {
-            BaseTask taskItem = _panelManager.CreatePanel<BaseTask>(_panelManager.taskConatainer.transform);
+            BaseTask taskItem = _panelManager.CreatePanel<BaseTask>(_panelManager.taskConatainer);
 
-            taskItem.Construct(t);
+            taskItem.Init(t);
         });
     }
 
@@ -101,8 +97,8 @@ public class TaskManager : MonoBehaviour
     {
         MessageManager.ShowHideTutorial(true);
 
-        var taskItem = _panelManager.CreatePanel<BaseTask>(_panelManager.taskConatainer.transform);
+        var taskItem = _panelManager.CreatePanel<BaseTask>(_panelManager.taskConatainer);
 
-        taskItem.Construct(task);
+        taskItem.Init(task);
     }
 }

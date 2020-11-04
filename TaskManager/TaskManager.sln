@@ -1,7 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zenject", "Zenject.csproj", "{71B33658-4B08-2457-489F-1F3A9C9E78C9}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{23EAD7F9-BA89-512E-EFD9-8C6930D46738}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zenject-TestFramework", "Zenject-TestFramework.csproj", "{6FD68610-F218-5D96-87BC-BC1F65D77B33}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zenject-Editor", "Zenject-Editor.csproj", "{01881169-69F2-5444-5678-CD2425A7DBE3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +15,22 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{71B33658-4B08-2457-489F-1F3A9C9E78C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71B33658-4B08-2457-489F-1F3A9C9E78C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71B33658-4B08-2457-489F-1F3A9C9E78C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71B33658-4B08-2457-489F-1F3A9C9E78C9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{23EAD7F9-BA89-512E-EFD9-8C6930D46738}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{23EAD7F9-BA89-512E-EFD9-8C6930D46738}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23EAD7F9-BA89-512E-EFD9-8C6930D46738}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23EAD7F9-BA89-512E-EFD9-8C6930D46738}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FD68610-F218-5D96-87BC-BC1F65D77B33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FD68610-F218-5D96-87BC-BC1F65D77B33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FD68610-F218-5D96-87BC-BC1F65D77B33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FD68610-F218-5D96-87BC-BC1F65D77B33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01881169-69F2-5444-5678-CD2425A7DBE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01881169-69F2-5444-5678-CD2425A7DBE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01881169-69F2-5444-5678-CD2425A7DBE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01881169-69F2-5444-5678-CD2425A7DBE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
