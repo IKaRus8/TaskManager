@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Scripts.Enums;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -113,12 +114,4 @@ public class Swipe : MonoBehaviour
             }
         }
     }
-}
-
-public enum Side
-{
-    Right,
-    Left,
-    Up,
-    Down
 }

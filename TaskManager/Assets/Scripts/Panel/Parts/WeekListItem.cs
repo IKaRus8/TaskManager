@@ -1,4 +1,4 @@
-﻿using Assets.Scripts.Panel;
+﻿using Assets.Scripts.DI.Signals;
 using UnityEngine.UI;
 using Zenject;
 
@@ -10,8 +10,15 @@ public class WeekListItem : BaseTempElement
 
     private WeekController _week;
 
+    private UIManager _panelManager;
+    private SignalBus _signalBus;
+
     [Inject]
-    private PanelManager _panelManager;
+    private void Construct(UIManager panelManager, SignalBus signalBus)
+    {
+        _panelManager = panelManager;
+        _signalBus = signalBus;
+    }
 
     protected override void Awake()
     {
@@ -32,9 +39,9 @@ public class WeekListItem : BaseTempElement
     {
         var panel = _panelManager.CreatePanel<WeekInfoPanel>(_panelManager.panelBack);
 
-        if(panel != null)
+        if (panel != null)
         {
-            _panelManager.EnableBackground(true);
+            _signalBus.Fire(new EnableBackgroundSignal(true));
 
             panel.Init(_week);
         }

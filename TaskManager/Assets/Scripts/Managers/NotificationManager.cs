@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Unity.Notifications.Android;
-using UnityEngine;
 
 public class NotificationManager
 {

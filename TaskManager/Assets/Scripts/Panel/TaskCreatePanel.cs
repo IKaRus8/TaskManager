@@ -1,4 +1,4 @@
-﻿using Assets.Scripts.Panel;
+﻿using Assets.Scripts.DI.Signals;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,40 +9,53 @@ using Zenject;
 
 public class TaskCreatePanel : BaseTempElement
 {
-    public Toggle taskType;
-    public Toggle inAllWeekToggle;
-    public Button weekChangeButton;
-    public Button dayChangeButton;
-    public Button CalendarButton;
-    public Button createButton;
-    public Button closeButton;
+    [SerializeField]
+    private Toggle taskType;
+    [SerializeField]
+    private Toggle inAllWeekToggle;
+    [SerializeField]
+    private Button weekChangeButton;
+    [SerializeField]
+    private Button dayChangeButton;
+    [SerializeField]
+    private Button CalendarButton;
+    [SerializeField]
+    private Button createButton;
+    [SerializeField]
+    private Button closeButton;
+    [SerializeField]
+    private Text selectedWeekText;
+    [SerializeField]
+    private Text selectedDayText;
 
     public CalendarPanel calendar;
 
     [Space]
-    public DayItem dayWeekItemGo;
+    public DayInfoButton dayWeekItemGo;
 
     [Space]
     public InputField nameInputField;
     public InputField descriptionInputField;
-    public GameObject dayGo;
+    public RectTransform daysContainerRect;
     public GameObject weekParentGo;
 
-    private PanelManager _panelManager;
-    private TaskManager _taskManager;
+    private SignalBus _signalBus;
+    private TaskService _taskManager;
     private WeekManager _weekManager;
+    private UIManager _uiManager;
 
     private WeekController Week { get; set; }
     private DayOfWeek Day { get; set; }
-    private List<DayItem> Days { get; set; }
+    //private List<DayInfoButton> Days { get; set; }
     private DateTime TaskDate { get; set; }
 
     [Inject]
-    private void Construct(PanelManager panelManager, TaskManager taskManager, WeekManager weekManager)
+    private void Construct(SignalBus signalBus, TaskService taskManager, WeekManager weekManager, UIManager uiManager)
     {
-        _panelManager = panelManager;
+        _signalBus = signalBus;
         _taskManager = taskManager;
         _weekManager = weekManager;
+        _uiManager = uiManager;
     }
 
     protected override void Awake()
@@ -51,16 +64,17 @@ public class TaskCreatePanel : BaseTempElement
 
         createButton.onClick.AddListener(OnCreateButtonClick);
         closeButton.onClick.AddListener(Close);
+        weekChangeButton.onClick.AddListener(OnChangeWeekButtonClick);
 
         taskType.onValueChanged.AddListener(OnTypeToggleChanged);
         inAllWeekToggle.onValueChanged.AddListener(OnAllWeekToggleChanged);
         CalendarButton.onClick.AddListener(OnCalendarButtonClick);
         calendar.Callback = OnDaySelected;
 
-        Days = dayGo.GetComponentsInChildren<DayItem>().ToList();
+        //Days = dayGo.GetComponentsInChildren<DayInfoButton>().ToList();
 
         weekParentGo.SetActive(false);
-        dayGo.SetActive(false);
+        daysContainerRect.gameObject.SetActive(false);
 
         Init();
     }
@@ -69,17 +83,43 @@ public class TaskCreatePanel : BaseTempElement
     {
         _weekManager.Weeks.ForEach(w => 
         {
-            DayItem controller = Instantiate(dayWeekItemGo, weekParentGo.transform);
+            //DayInfoButton controller = Instantiate(dayWeekItemGo, weekParentGo.transform);
 
-            controller.Week = w;
-            controller.text.text = w.WeekName;
-            controller.button.onClick.AddListener(() => OnWeekButtonClick(controller));
+            var dayInfo = _uiManager.CreatePanel<DayInfo>(weekParentGo.GetComponent<RectTransform>());
+
+            var controller = dayInfo.gameObject.AddComponent<DayInfoButton>();
+
+            controller.Init(w, OnWeekButtonClick);
+
+            //controller.Week = w;
+            //controller.text.text = w.WeekName;
+            //controller.button.onClick.AddListener(() => OnWeekButtonClick(controller));
         });
 
         Week = _weekManager.Weeks?.FirstOrDefault();
+
+        if (Week != null)
+        {
+            selectedWeekText.text = Week.WeekName;
+        }
+
         Day = DayOfWeek.Monday;
 
-        Days.ForEach(d => d.button.onClick.AddListener(() => OnDayButtonClick(d)));
+        //Days.ForEach(d => d.button.onClick.AddListener(() => OnDayButtonClick(d)));
+
+        foreach (DayOfWeek dayOfWeek in Enum.GetValues(typeof(DayOfWeek)))
+        {
+            var day = _uiManager.CreatePanel<DayInfo>(daysContainerRect);
+
+            var controller = day.gameObject.AddComponent<DayInfoButton>();
+
+            controller.Init(dayOfWeek, OnDayButtonClick);
+        }
+    }
+
+    private void OnChangeWeekButtonClick()
+    {
+        weekParentGo.SetActive(true);
     }
 
     //TODO: обработать исключения
@@ -90,6 +130,13 @@ public class TaskCreatePanel : BaseTempElement
             nameInputField.placeholder.color = Color.red;
 
             return;
+        }
+
+        if (Week == null)
+        {
+            _weekManager.Create(TextStorage.UserFirstWeek);
+
+            Week = _weekManager.Weeks.FirstOrDefault();
         }
 
         if (inAllWeekToggle.isOn)
@@ -116,25 +163,27 @@ public class TaskCreatePanel : BaseTempElement
             _date = TaskDate
         };
 
-        _taskManager.Create(Week, newTask);
+        _taskManager.Create(week, newTask);
     }
 
-    private void OnWeekButtonClick(DayItem item)
+    private void OnWeekButtonClick(DayInfoButton item)
     {
         Week = item.Week;
 
-        weekChangeButton.GetComponentInChildren<Text>().text = Week.WeekName;
+        selectedWeekText.text = Week.WeekName;
 
         weekParentGo.gameObject.SetActive(false);
     }
 
-    private void OnDayButtonClick(DayItem item)
+    private void OnDayButtonClick(DayInfoButton item)
     {
-        Day = item.day;
+        Day = item.Info.dayOfWeek;
 
-        dayChangeButton.GetComponentInChildren<Text>().text = Enum.GetName(typeof(DayOfWeek), Day);
+        //dayChangeButton.GetComponentInChildren<Text>().text = Enum.GetName(typeof(DayOfWeek), Day);
 
-        dayGo.gameObject.SetActive(false);
+        selectedDayText.text = item.Info.Capture;
+
+        daysContainerRect.gameObject.SetActive(false);
     }
 
     private void OnCalendarButtonClick()
@@ -170,7 +219,7 @@ public class TaskCreatePanel : BaseTempElement
 
     public override void Close()
     {
-        _panelManager.EnableBackground(false);
+        _signalBus.Fire(new EnableBackgroundSignal(false));
 
         base.Close();
     }

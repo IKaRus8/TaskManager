@@ -1,10 +1,8 @@
-﻿using System.Runtime.Remoting.Messaging;
-using UnityEngine;
-using Zenject;
+﻿using UnityEngine;
 
 public class BasePanel : MonoBehaviour
 {
-    private RectTransform rectTransform;
+    protected RectTransform rectTransform;
 
     protected virtual void Awake()
     {

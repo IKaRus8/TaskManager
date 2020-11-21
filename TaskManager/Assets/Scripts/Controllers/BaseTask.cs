@@ -1,5 +1,4 @@
-﻿using Assets.Scripts.Panel;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
@@ -180,7 +179,7 @@ public class BaseTask : BaseTempElement
     {
         if (value)
         {
-            content.SetActive(true); 
+            content.SetActive(true);
         }
         else
         {

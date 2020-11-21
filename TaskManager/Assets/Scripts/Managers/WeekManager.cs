@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Assets.Scripts.DI.Signals;
+using Assets.Scripts.Enums;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +9,19 @@ using Zenject;
 
 public class WeekManager
 {
-    [Inject]
-    private PanelManager _panelManager;
+    private UIManager _panelManager;
+    private SignalBus _signalBus;
 
-    public List<WeekController> Weeks { get; private set; } = new List<WeekController>();
     public WeekController CurrentWeek { get; private set; }
+    public List<WeekController> Weeks { get; private set; } = new List<WeekController>();
+
+    [Inject]
+    private void Construct(UIManager panelManager, SignalBus signalBus)
+
+    {
+        _panelManager = panelManager;
+        _signalBus = signalBus;
+    }
 
     public void Add(List<WeekController> weeks)
     {
@@ -20,7 +30,7 @@ public class WeekManager
         SetCurrentWeek();
     }
 
-    public void Add(WeekController newWeek)
+    private void Add(WeekController newWeek)
     {
         if (newWeek != null)
         {
@@ -30,7 +40,7 @@ public class WeekManager
         }
     }
 
-    public void Add(string weekName)
+    public void Create(string weekName)
     {
         WeekController newWeek = new WeekController(Weeks.Count + 1, weekName);
 
@@ -48,6 +58,8 @@ public class WeekManager
         Weeks.Add(newWeek);
 
         StorageManager.Update(newWeek);
+
+        SetCurrentWeek();
     }
 
     public void Remove(string weekName)
@@ -56,13 +68,24 @@ public class WeekManager
 
         if (week != null)
         {
-            Weeks.Remove(week); 
+            Weeks.Remove(week);
         }
+
+       // _signalBus.Fire(new SendMessageSignal(MessageTarget.Footer, TextStorage.RemoveLastWeekMessage));
     }
 
     public void WeekDialogConstruct()
     {
-        _panelManager.WeekDialogConstruct(Weeks.Count, Add);
+        var panel = _panelManager.CreatePanel<DialogWindowInput>(_panelManager.panelBack);
+
+        if (panel != default)
+        {
+            panel.input.text = TextStorage.Week + " " + Weeks.Count + 1;
+            panel.ActionString = Create;
+
+            _signalBus.Fire(new SwitchOffPanelsSignal(null));
+            _signalBus.Fire(new EnableBackgroundSignal(true));
+        }
     }
 
     public static DateTime GetNextWeekStartDay(DateTime start, DayOfWeek day = DayOfWeek.Monday)

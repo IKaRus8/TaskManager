@@ -1,4 +1,6 @@
-﻿
+﻿/// <summary>
+/// Хранилище всех текстовых констант
+/// </summary>
 public static class TextStorage
 {
     public static string MouseX => "Mouse X";
@@ -42,4 +44,8 @@ public static class TextStorage
     public static string NotificationChanel_name => "Default Channel";
 
     public static string NotificationChanel_Description => "Generic notifications";
+
+    public static string NoConectMessage = "Не удалось установить подключение";
+
+    public static string RemoveLastWeekMessage = "Колличество недель не может опуститься до нуля";
 }

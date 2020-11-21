@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Assets.Scripts.DI.Signals;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,7 +19,7 @@ public class MenuController : MonoBehaviour
     private Button closeButton;
 
     [SerializeField]
-    [Range(0.01f, 0.1f)]
+    [Range(0.05f, 0.3f)]
     private float speedScale;
 
     private RectTransform rectTransform;
@@ -28,16 +28,18 @@ public class MenuController : MonoBehaviour
     private float anchoredY;
     private float speed;
 
-    private PanelManager _panelManager;
-    private TaskManager _taskManager;
+    private UIManager _panelManager;
+    private TaskService _taskManager;
     private WeekManager _weekManager;
+    private SignalBus _signalBus;
 
     [Inject]
-    private void Construct(PanelManager panelManager, TaskManager taskManager, WeekManager weekManager)
+    private void Construct(UIManager panelManager, TaskService taskManager, WeekManager weekManager, SignalBus signalBus)
     {
         _panelManager = panelManager;
         _taskManager = taskManager;
         _weekManager = weekManager;
+        _signalBus = signalBus;
     }
 
     private void Awake()
@@ -138,8 +140,8 @@ public class MenuController : MonoBehaviour
 
     public void ShowTaskCreatePanel()
     {
-        _panelManager.SwitchOffPanels();
-        _panelManager.EnableBackground(true);
+        _signalBus.Fire(new SwitchOffPanelsSignal(null));
+        _signalBus.Fire(new EnableBackgroundSignal(true));
 
         _taskManager._taskCreatePanel = _panelManager.CreatePanel<TaskCreatePanel>(_panelManager.panelBack);
         _taskManager._taskCreatePanel.Show();

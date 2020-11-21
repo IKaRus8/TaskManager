@@ -1,20 +1,24 @@
-﻿using System;
+﻿using Assets.Scripts.DI.Signals;
+using Assets.Scripts.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Zenject;
 
-public class TaskManager
+public class TaskService
 {
     public TaskCreatePanel _taskCreatePanel { get; set; }
 
-    private PanelManager _panelManager;
+    private UIManager _panelManager;
     private WeekManager _weekManager;
+    private SignalBus _signalBus;
 
     [Inject]
-    private void Construct(PanelManager panelManager, WeekManager weekManager)
+    private void Construct(UIManager panelManager, WeekManager weekManager, SignalBus signalBus)
     {
         _panelManager = panelManager;
         _weekManager = weekManager;
+        _signalBus = signalBus;
     }
 
     public void LoadTasks()
@@ -59,7 +63,9 @@ public class TaskManager
     {
         DayController day = _weekManager.CurrentWeek.GetDay(DateTime.Now.DayOfWeek);
 
-        MessageManager.SetHeaderCaption($"{TextStorage.Today} {_weekManager.CurrentWeek.WeekName}, {day.DayOfWeek.ToString()}");
+        string message = $"{TextStorage.Today} {_weekManager.CurrentWeek.WeekName}, {day.DayOfWeek}";
+
+        _signalBus.Fire(new SendMessageSignal(MessageTarget.Header, message));
 
         day.tasks.ForEach(t => 
         {
@@ -95,7 +101,7 @@ public class TaskManager
 
     private void CreateTaskItem(TaskInfo task)
     {
-        MessageManager.ShowHideTutorial(true);
+        _signalBus.Fire(new SetActiveTutorialSignal(false));
 
         var taskItem = _panelManager.CreatePanel<BaseTask>(_panelManager.taskConatainer);
 

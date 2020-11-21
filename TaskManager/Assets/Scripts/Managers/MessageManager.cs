@@ -1,55 +1,43 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Assets.Scripts.DI.Signals;
+using Assets.Scripts.Enums;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class MessageManager : MonoBehaviour
 {
     public Text headerCaption;
-    public Text FooterInfo;
+    public Text footerInfo;
     public Text menuCaption;
     public GameObject tutorial;
 
-    private static Text _headerCaption;
-    private static Text _FooterInfo;
-    private static Text _menuCaption;
-    private static GameObject _tutorial;
-
-    public static MessageManager Instance;
-
-    private void Awake()
+    [Inject]
+    private void Construct(SignalBus signalBus)
     {
-        if(Instance == null)
+        signalBus.Subscribe<SendMessageSignal>(SetMessageText);
+        signalBus.Subscribe<SetActiveTutorialSignal>(ShowHideTutorial);
+    }
+
+    private void SetMessageText(SendMessageSignal signal)
+    {
+        switch (signal.Target)
         {
-            Instance = this;
+            case MessageTarget.Header :
+                headerCaption.text = signal.Message;
+                break;
+
+            case MessageTarget.Footer:
+                footerInfo.text = signal.Message;
+                break;
+
+            case MessageTarget.Menu:
+                menuCaption.text = signal.Message;
+                break;
         }
-
-        _headerCaption = headerCaption;
-        _FooterInfo = FooterInfo;
-        _menuCaption = menuCaption;
-        _tutorial = tutorial;
     }
 
-    public static void SetHeaderCaption(string text)
+    public void ShowHideTutorial(SetActiveTutorialSignal signal)
     {
-        _headerCaption.text = text;
-    }
-
-    public static void SetFooterInfo(string text)
-    {
-        _FooterInfo.text = text;
-    }
-
-    public static void SetMenuCaption(string text)
-    {
-        _menuCaption.text = text;
-    }
-
-    public static void ShowHideTutorial(bool value)
-    {
-        if (_tutorial.activeSelf != value)
-        {
-            _tutorial.SetActive(value); 
-        }
+        tutorial.SetActive(signal.Value);
     }
 }
