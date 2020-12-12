@@ -7,7 +7,7 @@ public class BaseTempElement : BasePanel, ITempElement
 {
     public void SetParent(RectTransform parent)
     {
-        transform.SetParent(parent);
+        transform.SetParent(parent, false);
     }
 
     public override void Close()

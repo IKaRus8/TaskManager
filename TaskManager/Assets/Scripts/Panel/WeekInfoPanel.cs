@@ -23,14 +23,12 @@ public class WeekInfoPanel : BaseTempElement
     private WeekController _week;
 
     private SignalBus _signalBus;
-    private WeekManager _weekManager;
     private UIManager _uiManager;
 
     [Inject]
-    private void Construct(SignalBus signalBus, WeekManager weekManager, UIManager uIManager)
+    private void Construct(SignalBus signalBus, UIManager uIManager)
     {
         _signalBus = signalBus;
-        _weekManager = weekManager;
         _uiManager = uIManager;
     }
 
@@ -42,12 +40,11 @@ public class WeekInfoPanel : BaseTempElement
 
         removeButton.onClick.AddListener(() =>
         {
-            var window = _uiManager.CreatePanel<DialogWindow>(rectTransform);
+            var window = _uiManager.CreatePanel<DialogWindow>(null);
 
             window.Action = () =>
             {
-                StorageManager.Remove(_week);
-                _weekManager.Remove(_week.WeekName);
+                _signalBus.Fire(new RemoveWeekSignal(_week));
 
                 Close();
             };

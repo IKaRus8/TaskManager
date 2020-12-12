@@ -23,7 +23,9 @@ public static class UserInfo
                 }
             });
 
-            return result;
+            var a = StorageManager.LoadTasksForUser();
+
+            return a;
         }
     }
 }

@@ -5,20 +5,27 @@ using System.Collections.Generic;
 using System.Linq;
 using Zenject;
 
+/// <summary>
+/// Сервис работы с задачами
+/// </summary>
 public class TaskService
 {
-    public TaskCreatePanel _taskCreatePanel { get; set; }
-
     private UIManager _panelManager;
     private WeekManager _weekManager;
     private SignalBus _signalBus;
 
-    [Inject]
-    private void Construct(UIManager panelManager, WeekManager weekManager, SignalBus signalBus)
+    private List<TaskInfo> ActiveTasks { get; set; }
+
+    public TaskService(UIManager panelManager, WeekManager weekManager, SignalBus signalBus)
     {
         _panelManager = panelManager;
         _weekManager = weekManager;
         _signalBus = signalBus;
+
+        _signalBus.Subscribe<TaskCreateSignal>(Create);
+        _signalBus.Subscribe<TaskRemovedSignal>(OnTaskRemoved);
+
+        ActiveTasks = new List<TaskInfo>();
     }
 
     public void LoadTasks()
@@ -43,17 +50,6 @@ public class TaskService
         });
     }
 
-    public void Create(WeekController week, TaskInfo newTask)
-    {
-        if (newTask.isRecurring)
-        {
-            week.AddTask(newTask);
-        }
-
-        Save(newTask);
-        CheckTaskToShow(newTask);
-    }
-
     public void Save(TaskInfo newTask)
     {
         StorageManager.Save(newTask);
@@ -69,9 +65,7 @@ public class TaskService
 
         day.tasks.ForEach(t => 
         {
-            BaseTask taskItem = _panelManager.CreatePanel<BaseTask>(_panelManager.taskConatainer);
-
-            taskItem.Init(t);
+            CreateTaskItem(t);
         });
     }
 
@@ -101,10 +95,40 @@ public class TaskService
 
     private void CreateTaskItem(TaskInfo task)
     {
-        _signalBus.Fire(new SetActiveTutorialSignal(false));
+        if (!ActiveTasks.Any())
+        {
+            _signalBus.Fire(new SetActiveTutorialSignal(false)); 
+        }
 
         var taskItem = _panelManager.CreatePanel<BaseTask>(_panelManager.taskConatainer);
 
         taskItem.Init(task);
+
+        ActiveTasks.Add(task);
+    }
+
+    /// <summary>
+    /// Создать новую задачу
+    /// </summary>
+    /// <param name="signal">Информация о задаче</param>
+    private void Create(TaskCreateSignal signal)
+    {
+        if (signal.Info.isRecurring)
+        {
+            signal.Week.AddTask(signal.Info);
+        }
+
+        Save(signal.Info);
+        CheckTaskToShow(signal.Info);
+    }
+
+    private void OnTaskRemoved(TaskRemovedSignal signal)
+    {
+        ActiveTasks.Remove(signal.Task);
+
+        if (!ActiveTasks.Any())
+        {
+            _signalBus.Fire(new SetActiveTutorialSignal(true));
+        }
     }
 }

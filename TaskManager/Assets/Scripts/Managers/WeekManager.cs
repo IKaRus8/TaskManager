@@ -1,26 +1,22 @@
 ﻿using Assets.Scripts.DI.Signals;
-using Assets.Scripts.Enums;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using Zenject;
 
 public class WeekManager
 {
     private UIManager _panelManager;
-    private SignalBus _signalBus;
 
     public WeekController CurrentWeek { get; private set; }
     public List<WeekController> Weeks { get; private set; } = new List<WeekController>();
 
     [Inject]
     private void Construct(UIManager panelManager, SignalBus signalBus)
-
     {
         _panelManager = panelManager;
-        _signalBus = signalBus;
+
+        signalBus.Subscribe<RemoveWeekSignal>(Remove);
     }
 
     public void Add(List<WeekController> weeks)
@@ -62,30 +58,19 @@ public class WeekManager
         SetCurrentWeek();
     }
 
-    public void Remove(string weekName)
+    public void Remove(RemoveWeekSignal signal)
     {
-        WeekController week = Weeks.FirstOrDefault(w => w.WeekName == weekName);
+        _ = Weeks.Remove(signal.Week);
 
-        if (week != null)
-        {
-            Weeks.Remove(week);
-        }
-
-       // _signalBus.Fire(new SendMessageSignal(MessageTarget.Footer, TextStorage.RemoveLastWeekMessage));
+        StorageManager.Remove(signal.Week);
     }
 
     public void WeekDialogConstruct()
     {
-        var panel = _panelManager.CreatePanel<DialogWindowInput>(_panelManager.panelBack);
+        var panel = _panelManager.CreatePanel<DialogWindowInput>(null);
 
-        if (panel != default)
-        {
-            panel.input.text = TextStorage.Week + " " + Weeks.Count + 1;
-            panel.ActionString = Create;
-
-            _signalBus.Fire(new SwitchOffPanelsSignal(null));
-            _signalBus.Fire(new EnableBackgroundSignal(true));
-        }
+        panel.input.text = TextStorage.Week + " " + Weeks.Count + 1;
+        panel.ActionString = Create;
     }
 
     public static DateTime GetNextWeekStartDay(DateTime start, DayOfWeek day = DayOfWeek.Monday)
@@ -98,8 +83,20 @@ public class WeekManager
 
     public void SetCurrentWeek()
     {
-        var week = Weeks.FirstOrDefault(w => w.weekNumber == Weeks.Where(w1 => w1.startWeek <= DateTime.Now).Max(w2 => w2.weekNumber));
+        var week = Weeks?.FirstOrDefault(w =>
+        {
+            var weeksBefore = Weeks?.Where(w1 => w1.startWeek <= DateTime.Now);
 
+            if (weeksBefore != null && weeksBefore.Any())
+            {
+                var weekNumber = weeksBefore.Max(w2 => w2.weekNumber);
+
+                return w.weekNumber == weekNumber;
+            }
+
+            return false;
+        });
+        
         if (week != null && week.startWeek.AddDays(7) < DateTime.Now)
         {
             Weeks = Weeks.OrderBy(w => w.weekNumber).ToList();

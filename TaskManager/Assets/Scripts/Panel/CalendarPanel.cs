@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class CalendarPanel : BasePanel
+public class CalendarPanel : BaseTempElement
 {
     public DatePicker yearPicker;
     public DatePicker monthPicker;
@@ -107,6 +107,8 @@ public class CalendarPanel : BasePanel
         SelectedDate = new DateTime(SelectedDate.Year, SelectedDate.Month, day).AddHours(3);
 
         Callback?.Invoke(SelectedDate);
+
+        Close();
     }
 
     private void OnYearToggleChange(bool value)

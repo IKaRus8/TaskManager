@@ -12,11 +12,11 @@ public class DialogWindowInput : DialogWindow
 
     protected override void Awake()
     {
-        base.Awake();
-
         input.onEndEdit.AddListener(OnInputFieldChange);
 
         okButton.onClick.AddListener(() => ActionString?.Invoke(input.text));
+
+        base.Awake();
     }
 
     private void OnInputFieldChange(string text)

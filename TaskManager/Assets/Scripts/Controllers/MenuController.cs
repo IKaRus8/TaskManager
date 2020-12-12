@@ -29,15 +29,13 @@ public class MenuController : MonoBehaviour
     private float speed;
 
     private UIManager _panelManager;
-    private TaskService _taskManager;
     private WeekManager _weekManager;
     private SignalBus _signalBus;
 
     [Inject]
-    private void Construct(UIManager panelManager, TaskService taskManager, WeekManager weekManager, SignalBus signalBus)
+    private void Construct(UIManager panelManager, WeekManager weekManager, SignalBus signalBus)
     {
         _panelManager = panelManager;
-        _taskManager = taskManager;
         _weekManager = weekManager;
         _signalBus = signalBus;
     }
@@ -143,8 +141,8 @@ public class MenuController : MonoBehaviour
         _signalBus.Fire(new SwitchOffPanelsSignal(null));
         _signalBus.Fire(new EnableBackgroundSignal(true));
 
-        _taskManager._taskCreatePanel = _panelManager.CreatePanel<TaskCreatePanel>(_panelManager.panelBack);
-        _taskManager._taskCreatePanel.Show();
+        var taskCreatePanel = _panelManager.CreatePanel<TaskCreatePanel>(_panelManager.panelBack);
+        taskCreatePanel.Show();
     }
 
     private void OnWeekToggleChange(bool value)

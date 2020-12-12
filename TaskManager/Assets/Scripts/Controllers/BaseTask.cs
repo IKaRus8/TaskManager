@@ -1,21 +1,37 @@
-﻿using UnityEngine;
+﻿using Assets.Scripts.DI.Signals;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Zenject;
 
 public class BaseTask : BaseTempElement
 {
-    public Text taskName;
-    public Image background;
-    public Toggle doneToggle;
-    public Color doneColor;
+    [SerializeField]
+    private Text taskName;
+    [SerializeField]
+    private Image background;
+    [SerializeField]
+    private Toggle doneToggle;
+    [SerializeField]
+    private Color doneColor;
+    [SerializeField]
+    private Color removeColor = Color.red;
+    [SerializeField]
+    private Color changeColor = Color.yellow;
 
     [Space]
-    public GameObject content;
     public Text description;
-    public InputField inputField;
-    public Button leftButton;
-    public Button rightButton;
-    public Toggle HeaderToggle;
+
+    [SerializeField]
+    private GameObject content;
+    [SerializeField]
+    private InputField inputField;
+    [SerializeField]
+    private Button leftButton;
+    [SerializeField]
+    private Button rightButton;
+    [SerializeField]
+    private Toggle HeaderToggle;
 
     public TaskInfo taskInfo;
 
@@ -26,11 +42,13 @@ public class BaseTask : BaseTempElement
     protected UnityAction rightBtnAction;
 
     protected Color defColor;
-    private Color removeColor = Color.red;
-    private Color changeColor = Color.yellow;
+    
     private string oldtext;
     private bool changeMod;
     private bool awaked;
+
+    [Inject]
+    private SignalBus _signalBus;
 
     protected override void Awake()
     {
@@ -127,13 +145,6 @@ public class BaseTask : BaseTempElement
         SetTaskView();
     }
 
-    protected virtual void Remove()
-    {
-        taskInfo.deleted = true;
-        StorageManager.Update(taskInfo);
-        Close();
-    }
-
     protected virtual void Cancel()
     {
         ToDefaulState();
@@ -197,5 +208,15 @@ public class BaseTask : BaseTempElement
         description.text = newText;
 
         background.color = changeColor;
+    }
+
+    protected virtual void Remove()
+    {
+        taskInfo.deleted = true;
+        StorageManager.Update(taskInfo);
+
+        _signalBus.Fire(new TaskRemovedSignal(taskInfo));
+
+        Close();
     }
 }

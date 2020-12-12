@@ -26,6 +26,10 @@ public class UIManager : MonoBehaviour
     private DiContainer _diContainer;
     private SignalBus _signalBus;
 
+    [Inject(Id = "mainCanvas")]
+    private Canvas _mainCanvas;
+    private RectTransform canvasRectTransform;
+
     //TODO: сдеалть счетчик тех кому нужен фон
     private int neededBackgroundCount;
 
@@ -38,6 +42,8 @@ public class UIManager : MonoBehaviour
 
     private void Awake()
     {
+        canvasRectTransform = _mainCanvas.GetComponent<RectTransform>();
+
         openMenuButton.onClick.AddListener(OnOpenMenuButtonClick);
 
         _signalBus.Subscribe<EnableBackgroundSignal>(EnableBackground);
@@ -88,6 +94,6 @@ public class UIManager : MonoBehaviour
     {
         var factory = _diContainer.Resolve<PanelFactory<T>>();
 
-        return factory.Create(parent);
+        return factory.Create(parent ?? canvasRectTransform );
     }
 }

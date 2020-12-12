@@ -48,4 +48,10 @@ public static class TextStorage
     public static string NoConectMessage = "Не удалось установить подключение";
 
     public static string RemoveLastWeekMessage = "Колличество недель не может опуститься до нуля";
+
+    public static string OnceActiveTask = "Только однажды";
+
+    public static string TaskByWeek = "В выбранную неделю";
+
+    public static string AllWeekTask = "Каждую неделю";
 }

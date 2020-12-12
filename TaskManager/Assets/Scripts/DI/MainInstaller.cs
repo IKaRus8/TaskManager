@@ -27,9 +27,9 @@ public class MainInstaller : MonoInstaller
 
         Container.Bind<NotificationManager>().AsSingle();
 
-        Container.Bind<Canvas>().WithId("mainCanvas").AsSingle();
+        Container.Bind<Canvas>().WithId("mainCanvas").FromInstance(mainCanvas).AsSingle();
 
-        Container.Bind<Camera>().WithId("mainCamera").AsSingle();
+        Container.Bind<Camera>().WithId("mainCamera").FromInstance(mainCamera).AsSingle();
 
         BindFactories();
 
@@ -73,6 +73,10 @@ public class MainInstaller : MonoInstaller
         Container.BindFactory<BackRaycaster, PanelFactory<BackRaycaster>>()
                  .FromComponentInNewPrefab(uIRepository.GetPrefab<BackRaycaster>())
                  .UnderTransform(mainCanvas.transform);
+
+        Container.BindFactory<CalendarPanel, PanelFactory<CalendarPanel>>()
+                 .FromComponentInNewPrefab(uIRepository.GetPrefab<CalendarPanel>())
+                 .UnderTransform(mainCanvas.transform);
     }
 
     private void BindSignal()
@@ -86,5 +90,11 @@ public class MainInstaller : MonoInstaller
         Container.DeclareSignal<SetActiveTutorialSignal>();
 
         Container.DeclareSignal<SendMessageSignal>();
+
+        Container.DeclareSignal<TaskCreateSignal>();
+
+        Container.DeclareSignal<TaskRemovedSignal>();
+
+        Container.DeclareSignal<RemoveWeekSignal>();
     }
 }
